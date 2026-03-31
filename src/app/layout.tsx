@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { cn } from "@/lib/utils";
+import { siteUrl, authors } from "@/lib/info";
 
 const geistSans = Geist({
   variable: "--font-sans",
@@ -15,18 +16,49 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Template-NEXT",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "ResearchVault",
+    template: "%s | ResearchVault",
+  },
   description:
-    "A reusable Next.js starter with TypeScript, Tailwind CSS, React Compiler, Turbopack, shadcn/ui preset b1YmqvjRA, and next-themes.",
+    "Save, organise, and manage research links with notes, categories, and tags.",
   keywords: [
-    "Next.js",
-    "TypeScript",
-    "Tailwind CSS",
-    "shadcn/ui",
-    "next-themes",
-    "Template",
+    "ResearchVault",
+    "research management",
+    "link organiser",
+    "research links",
+    "academic productivity",
+    "student research",
+    "knowledge management",
   ],
-  authors: [{ name: "Thilina R. (Edward Hyde)", url: "https://thilina.dev" }],
+  authors,
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "ResearchVault",
+    description:
+      "Save, organise, and manage research links with notes, categories, and tags.",
+    url: siteUrl,
+    siteName: "ResearchVault",
+    type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "ResearchVault OG Image",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ResearchVault",
+    description:
+      "Save, organise, and manage research links with notes, categories, and tags.",
+    images: ["/og-image.png"],
+  },
 };
 
 export default function RootLayout({
@@ -50,7 +82,16 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <div className="flex-1 grow">{children}</div>
+            <div className="mx-auto w-full max-w-screen-2xl flex-1 px-4 md:px-8 lg:px-20">
+              <div className="grid min-h-dvh gap-6 lg:grid-cols-12">
+                <div className="col-span-5">
+                  <div className="top-0 pt-24 lg:fixed lg:pb-24">
+                    <span>The form will go here</span>
+                  </div>
+                </div>
+                <div className="col-span-7">{children}</div>
+              </div>
+            </div>
           </ThemeProvider>
         </main>
       </body>
