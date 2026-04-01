@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { cn } from "@/lib/utils";
 import { siteUrl, authors } from "@/lib/info";
+import { LinkForm } from "@/components/link-form";
 
 const geistSans = Geist({
   variable: "--font-sans",
@@ -83,13 +85,21 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <div className="mx-auto w-full max-w-screen-2xl flex-1 px-4 md:px-8 lg:px-20">
-              <div className="grid min-h-dvh gap-6 lg:grid-cols-12">
-                <div className="col-span-5">
-                  <div className="top-0 pt-24 lg:fixed lg:pb-24">
-                    <span>The form will go here</span>
+              <div className="grid min-h-dvh gap-12 lg:grid-cols-12 lg:gap-6">
+                <div className="lg:col-span-5">
+                  <div className="flex flex-col justify-center gap-6 pt-24 lg:sticky lg:top-0 lg:h-dvh lg:pb-24">
+                    <Image
+                      width={860.27}
+                      height={160}
+                      src="/logo.svg"
+                      loading="eager"
+                      alt="ResearchVault logo"
+                      className="pointer-events-none w-60 select-none"
+                    />
+                    <LinkForm />
                   </div>
                 </div>
-                <div className="col-span-7">{children}</div>
+                <div className="lg:col-span-7">{children}</div>
               </div>
             </div>
           </ThemeProvider>
