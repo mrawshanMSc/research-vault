@@ -1,28 +1,23 @@
-import { MongoClient } from "mongodb";
-import { config } from "./config";
-
-const { mongodbUri, dbName } = config;
-
-if (!mongodbUri) {
-  throw new Error("Please define MONGODB_URI in .env");
-}
-
-if (!dbName) {
-  throw new Error("Please define MONGODB_DB_NAME in .env");
-}
+import { Db, MongoClient } from "mongodb";
+import { getConfig } from "./config";
 
 declare global {
   var _mongoClientPromise: Promise<MongoClient> | undefined;
 }
 
-if (!global._mongoClientPromise) {
-  const client = new MongoClient(mongodbUri);
-  global._mongoClientPromise = client.connect();
+function getClientPromise(): Promise<MongoClient> {
+  const { mongodbUri } = getConfig();
+
+  if (!global._mongoClientPromise) {
+    const client = new MongoClient(mongodbUri);
+    global._mongoClientPromise = client.connect();
+  }
+
+  return global._mongoClientPromise;
 }
 
-const clientPromise = global._mongoClientPromise;
-
-export async function getDb() {
-  const client = await clientPromise;
+export async function getDb(): Promise<Db> {
+  const { dbName } = getConfig();
+  const client = await getClientPromise();
   return client.db(dbName);
 }

@@ -1,12 +1,22 @@
-if (!process.env.MONGODB_URI) {
-  throw new Error("Missing MONGODB_URI");
-}
-
-if (!process.env.MONGODB_DB_NAME) {
-  throw new Error("Missing MONGODB_DB_NAME");
-}
-
-export const config = {
-  mongodbUri: process.env.MONGODB_URI,
-  dbName: process.env.MONGODB_DB_NAME,
+type AppConfig = {
+  mongodbUri: string;
+  dbName: string;
 };
+
+export function getConfig(): AppConfig {
+  const mongodbUri = process.env.MONGODB_URI;
+  const dbName = process.env.MONGODB_DB_NAME;
+
+  if (!mongodbUri) {
+    throw new Error("Missing MONGODB_URI");
+  }
+
+  if (!dbName) {
+    throw new Error("Missing MONGODB_DB_NAME");
+  }
+
+  return {
+    mongodbUri,
+    dbName,
+  };
+}
