@@ -48,7 +48,7 @@ jobs:
         run: npm run format:check
 
       - name: Build
-      run: npm run build
-      env:
-        MONGODB_URI: ${{ secrets.MONGODB_URI }}
-        MONGODB_DB_NAME: ${{ secrets.MONGODB_DB_NAME }}
+        run: npm run build
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          MONGODB_DB_NAME: ${{ secrets.MONGODB_DB_NAME }}
