@@ -23,3 +23,10 @@ export type LinkItem = {
   category: LinkCategory;
   createdAt: Date;
 };
+
+export type CreateLinkInput = {
+  url: string;
+  title: string;
+  notes: string;
+  category: string;
+};
