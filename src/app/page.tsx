@@ -5,7 +5,16 @@ export const metadata: Metadata = {
   description: "A collection of shared research materials and resources",
 };
 
-async function getLinks() {
+type Link = {
+  _id: string;
+  url: string;
+  title: string;
+  notes?: string;
+  category?: string;
+  createdAt: string;
+};
+
+async function getLinks(): Promise<Link[]> {
   const res = await fetch("http://localhost:3000/api/links", {
     method: "GET",
     cache: "no-store",
@@ -34,14 +43,14 @@ export default async function Home() {
         </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
-          {links.map((link: any) => {
+          {links.map((link) => {
             const formattedDate = new Date(link.createdAt).toLocaleString();
 
             return (
               <div
                 key={link._id}
-                id={`link-${link._id}`} // ✅ unique identifier for DOM
-                data-link-id={link._id} // ✅ optional (useful for JS/testing)
+                id={`link-${link._id}`}
+                data-link-id={link._id}
                 className="border-border bg-primary/2 flex flex-col gap-2 rounded-lg border p-4 transition hover:shadow-sm"
               >
                 {/* Title */}
