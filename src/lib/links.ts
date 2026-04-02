@@ -15,9 +15,7 @@ type LinkDocument = {
 };
 
 function getLinksCollection() {
-  return getDb().then((db) =>
-    db.collection<LinkDocument>(COLLECTION_NAME)
-  );
+  return getDb().then((db) => db.collection<LinkDocument>(COLLECTION_NAME));
 }
 
 export function buildLinkDocument(data: NormalizedCreateLinkInput) {
@@ -30,10 +28,7 @@ export function buildLinkDocument(data: NormalizedCreateLinkInput) {
 export async function listLinks(): Promise<LinkItem[]> {
   const collection = await getLinksCollection();
 
-  const documents = await collection
-    .find({})
-    .sort({ createdAt: -1 })
-    .toArray();
+  const documents = await collection.find({}).sort({ createdAt: -1 }).toArray();
 
   return documents.map((document) => ({
     id: document._id!.toHexString(),
