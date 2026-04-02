@@ -27,9 +27,38 @@ export function LinkForm() {
   const [category, setCategory] = useState("");
   const [notes, setNotes] = useState("");
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ url, title, category, notes });
+
+    const data = { url, title, category, notes };
+
+    try {
+      const res = await fetch("/api/links", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        console.error("Error creating link:", result);
+        alert("Failed to create link. Please check the console for details.");
+      } else {
+        console.log("Link created successfully:", result);
+        alert("Link created successfully!");
+
+        setUrl("");
+        setTitle("");
+        setCategory("");
+        setNotes("");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Something went wrong. Please check the console for details.");
+    }
   };
 
   return (
@@ -110,9 +139,6 @@ export function LinkForm() {
         <FieldSet className="flex items-center justify-between">
           <Field orientation="horizontal">
             <Button type="submit">Submit</Button>
-            {/* <Button variant="outline" type="button">
-              Cancel
-            </Button> */}
           </Field>
         </FieldSet>
       </form>
