@@ -7,6 +7,7 @@ vi.mock("@/lib/links");
 describe("GET /api/links", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.spyOn(console, "error").mockImplementation(() => {});
   });
 
   it("should return all links successfully", async () => {
