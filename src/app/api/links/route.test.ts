@@ -16,7 +16,7 @@ describe("GET /api/links", () => {
         url: "https://example.com",
         title: "Example",
         notes: "Test",
-        category: "Journal Article",
+        category: "Journal Article" as const,
         createdAt: new Date(),
       },
     ];
