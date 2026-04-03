@@ -19,7 +19,8 @@ const dateFormatter = new Intl.DateTimeFormat("en-US", {
   minute: "2-digit",
 });
 
-function toDate(createdAt: Date | string): Date {
+function toDate(createdAt: Date | string | undefined): Date | null {
+  if (!createdAt) return null;
   return typeof createdAt === "string" ? new Date(createdAt) : createdAt;
 }
 
@@ -45,12 +46,14 @@ export function ResearchLinkCard({
           <FolderKanban className="size-3.5 shrink-0" aria-hidden />
           {category}
         </span>
-        <time
-          dateTime={date.toISOString()}
-          className="text-muted-foreground text-xs tabular-nums"
-        >
-          {dateFormatter.format(date)}
-        </time>
+        {date && !isNaN(date.getTime()) && (
+          <time
+            dateTime={date.toISOString()}
+            className="text-muted-foreground text-xs tabular-nums"
+          >
+            {dateFormatter.format(date)}
+          </time>
+        )}
       </div>
 
       <h3 className="text-balance text-xl font-medium tracking-tight">
