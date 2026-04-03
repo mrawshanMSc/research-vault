@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <section className="border-border h-full w-full space-y-4 pb-24 lg:border-l lg:pl-6 lg:pt-24">
+    <section className="border-border h-full w-full space-y-4 pb-24 lg:border-l lg:pt-24 lg:pl-6">
       <h2 className="text-2xl font-medium tracking-tight">
         The link list will go here
       </h2>
