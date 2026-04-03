@@ -36,24 +36,24 @@ export function ResearchLinkCard({
   return (
     <article
       className={cn(
-        "flex flex-col gap-4 rounded-2xl border border-slate-800 bg-[#1a1a1a] p-6 text-[#d1d5db] shadow-sm",
+        "border-border bg-card flex flex-col gap-3.5 rounded-2xl border p-6",
         className
       )}
     >
       <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-500/35 bg-[#1e293b] px-2.5 py-1 text-sm font-medium text-blue-500">
+        <span className="bg-primary/10 border-primary/35 text-primary inline-flex items-center gap-1.5 rounded-md border px-2.5 py-0.5 text-xs font-medium">
           <FolderKanban className="size-3.5 shrink-0" aria-hidden />
           {category}
         </span>
         <time
           dateTime={date.toISOString()}
-          className="text-sm tabular-nums text-[#9ca3af]"
+          className="text-muted-foreground text-xs tabular-nums"
         >
           {dateFormatter.format(date)}
         </time>
       </div>
 
-      <h3 className="text-balance text-xl font-semibold tracking-tight text-white">
+      <h3 className="text-balance text-xl font-medium tracking-tight">
         {title}
       </h3>
 
@@ -62,18 +62,15 @@ export function ResearchLinkCard({
           href={url}
           target="_blank"
           rel="noopener noreferrer"
-          className="min-w-0 flex-1 truncate text-sm font-medium text-[#3b82f6] underline underline-offset-2"
+          className="text-primary min-w-0 flex-1 truncate text-sm font-medium underline underline-offset-2"
         >
           {url}
         </a>
-        <ExternalLink
-          className="size-3.5 shrink-0 text-[#3b82f6]"
-          aria-hidden
-        />
+        <ExternalLink className="text-primary size-3.5 shrink-0" aria-hidden />
       </p>
 
       {notes ? (
-        <p className="line-clamp-1 text-sm leading-snug text-[#d1d5db]">
+        <p className="text-muted-foreground line-clamp-1 text-sm leading-snug">
           {notes}
         </p>
       ) : null}
