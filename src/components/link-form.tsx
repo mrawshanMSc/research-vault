@@ -67,9 +67,32 @@ export function LinkForm() {
   });
 
   // TODO: Implement form submission
-  function onSubmit(data: LinkFormValues) {
-    console.log(data);
-  }
+  const onSubmit = async (data: LinkFormValues) => {
+    try {
+      const res = await fetch("/api/links", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        console.error("Error creating link:", result);
+        alert("Failed to create link.");
+      } else {
+        console.log("Link created:", result);
+        alert("Link created successfully!");
+
+        form.reset(); // 🔥 important
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Something went wrong.");
+    }
+  };
 
   return (
     <section className="flex flex-col justify-start gap-6">
