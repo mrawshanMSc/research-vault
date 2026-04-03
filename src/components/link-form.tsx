@@ -66,7 +66,6 @@ export function LinkForm() {
     },
   });
 
-  // TODO: Implement form submission
   const onSubmit = async (data: LinkFormValues) => {
     try {
       const res = await fetch("/api/links", {
@@ -86,7 +85,7 @@ export function LinkForm() {
         console.log("Link created:", result);
         alert("Link created successfully!");
 
-        form.reset(); // 🔥 important
+        form.reset();
       }
     } catch (error) {
       console.error("Error:", error);
