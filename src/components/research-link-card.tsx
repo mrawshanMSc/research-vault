@@ -9,6 +9,7 @@ export type ResearchLinkCardProps = {
   url: string;
   notes: string;
   category: LinkCategory;
+  tags?: string[];
   createdAt: Date | string;
   className?: string;
 };
@@ -32,6 +33,7 @@ export function ResearchLinkCard({
   url,
   notes,
   category,
+  tags = [],
   createdAt,
   className,
 }: ResearchLinkCardProps) {
@@ -87,7 +89,9 @@ export function ResearchLinkCard({
       </div>
 
       <div className="border-border pt-4.5 flex items-center gap-3 border-t">
-        <ResearchLinkCardActions linkId={id} linkTitle={title} />
+        <ResearchLinkCardActions
+          link={{ id, title, url, notes, category, tags }}
+        />
       </div>
     </article>
   );
