@@ -40,7 +40,7 @@ export function ResearchLinkCard({
   return (
     <article
       className={cn(
-        "border-border bg-card hover:bg-primary/2 py-5.5 flex w-full min-w-0 flex-col gap-3.5 overflow-hidden rounded-2xl border px-5 transition-colors duration-300 ease-in-out",
+        "border-border bg-card hover:bg-primary/2 py-5.5 flex w-full min-w-0 flex-col gap-4 overflow-hidden rounded-2xl border px-5 transition-colors duration-300 ease-in-out",
         className
       )}
     >
@@ -66,7 +66,7 @@ export function ResearchLinkCard({
         {title}
       </h3>
 
-      <p className="flex min-w-0 max-w-full items-center gap-1.5">
+      <p className="-mt-1 flex min-w-0 max-w-full items-center gap-1.5">
         <a
           href={url}
           target="_blank"
@@ -78,14 +78,15 @@ export function ResearchLinkCard({
         <ExternalLink className="text-primary size-3.5 shrink-0" aria-hidden />
       </p>
 
-      <div className="flex min-w-0 items-center gap-3">
-        <div className="min-w-0 flex-1">
-          {notes ? (
-            <p className="text-muted-foreground line-clamp-1 text-sm leading-snug">
-              {notes}
-            </p>
-          ) : null}
-        </div>
+      <div className="min-w-0 flex-1">
+        {notes ? (
+          <p className="text-muted-foreground line-clamp-1 text-sm leading-snug">
+            {notes}
+          </p>
+        ) : null}
+      </div>
+
+      <div className="border-border pt-4.5 flex items-center gap-3 border-t">
         <ResearchLinkCardActions linkId={id} linkTitle={title} />
       </div>
     </article>
