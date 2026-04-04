@@ -6,8 +6,9 @@ function getFilterValue(value: string | string[] | undefined) {
   return typeof value === "string" ? value : "";
 }
 
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
+export async function GET(request?: Request) {
+  const url = request?.url || "http://localhost/api/links";
+  const { searchParams } = new URL(url);
 
   const filters: LinkFilters = {
     search: getFilterValue(searchParams.get("search") ?? undefined),
