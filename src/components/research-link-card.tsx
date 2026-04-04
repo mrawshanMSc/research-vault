@@ -1,8 +1,10 @@
 import { ExternalLink, FolderKanban } from "lucide-react";
+import { ResearchLinkCardActions } from "@/components/research-link-card-actions";
 import type { LinkCategory } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 export type ResearchLinkCardProps = {
+  id: string;
   title: string;
   url: string;
   notes: string;
@@ -25,6 +27,7 @@ function toDate(createdAt: Date | string | undefined): Date | null {
 }
 
 export function ResearchLinkCard({
+  id,
   title,
   url,
   notes,
@@ -75,11 +78,16 @@ export function ResearchLinkCard({
         <ExternalLink className="text-primary size-3.5 shrink-0" aria-hidden />
       </p>
 
-      {notes ? (
-        <p className="text-muted-foreground line-clamp-1 text-sm leading-snug">
-          {notes}
-        </p>
-      ) : null}
+      <div className="flex min-w-0 items-center gap-3">
+        <div className="min-w-0 flex-1">
+          {notes ? (
+            <p className="text-muted-foreground line-clamp-1 text-sm leading-snug">
+              {notes}
+            </p>
+          ) : null}
+        </div>
+        <ResearchLinkCardActions linkId={id} linkTitle={title} />
+      </div>
     </article>
   );
 }
