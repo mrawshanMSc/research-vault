@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { GET, POST } from "./route";
-import * as linksModule from "@/lib/links";
+import * as linksModule from "@/lib/schemas/links";
 import * as validationModule from "@/lib/validation";
 import type { NormalizedLinkInput } from "@/lib/validation";
 

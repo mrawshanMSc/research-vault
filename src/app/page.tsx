@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { connection } from "next/server";
 import { ResearchLinkCard } from "@/components/research-link-card";
-import { listLinks } from "@/lib/links";
+import { listLinks } from "@/lib/schemas/links";
 
 export const metadata: Metadata = {
   title: "ResearchVault - Home",
