@@ -48,7 +48,7 @@ describe("GET /api/links", () => {
   });
 
   it("should return 500 if fetching links fails", async () => {
-    vi.spyOn(linksModule, "listLinks").mockRejectedValue(new Error("DB error"));
+    vi.spyOn(linksModule, "listLinks").mockRejectedValue(() => {});
 
     const request = new Request("http://localhost/api/links");
 
@@ -153,9 +153,7 @@ describe("POST /api/links", () => {
       errors: {},
     });
 
-    vi.spyOn(linksModule, "createLink").mockRejectedValue(
-      new Error("DB error")
-    );
+    vi.spyOn(linksModule, "createLink").mockRejectedValue(() => {});
 
     const request = new Request("http://localhost/api/links", {
       method: "POST",
