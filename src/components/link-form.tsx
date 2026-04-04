@@ -1,7 +1,10 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { CheckIcon, Loader2Icon, PlusIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
 import {
   Field,
@@ -54,8 +57,36 @@ const linkFormSchema = z.object({
 
 type LinkFormValues = z.infer<typeof linkFormSchema>;
 
+function getCreateLinkErrorMessage(result: unknown) {
+  if (!result || typeof result !== "object") {
+    return "Something went wrong while saving the link.";
+  }
+
+  if (
+    "errors" in result &&
+    result.errors &&
+    typeof result.errors === "object" &&
+    !Array.isArray(result.errors)
+  ) {
+    const firstError = Object.values(result.errors).find(
+      (value) => typeof value === "string" && value.trim().length > 0
+    );
+
+    if (typeof firstError === "string") {
+      return firstError;
+    }
+  }
+
+  if ("error" in result && typeof result.error === "string") {
+    return result.error;
+  }
+
+  return "Something went wrong while saving the link.";
+}
+
 // Define the form component
 export function LinkForm() {
+  const router = useRouter();
   const form = useForm<LinkFormValues>({
     resolver: zodResolver(linkFormSchema),
     defaultValues: {
@@ -76,20 +107,27 @@ export function LinkForm() {
         body: JSON.stringify(data),
       });
 
-      const result = await res.json();
+      const result = await res.json().catch(() => null);
 
       if (!res.ok) {
-        console.error("Error creating link:", result);
-        alert("Failed to create link.");
+        toast.error("Could not create link", {
+          description: getCreateLinkErrorMessage(result),
+        });
+        return;
       } else {
-        console.log("Link created:", result);
-        alert("Link created successfully!");
+        toast.success("Link created", {
+          description: "Your research link has been added to the vault.",
+          icon: <CheckIcon className="size-4" />,
+        });
 
         form.reset();
+        router.refresh();
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("Something went wrong.");
+      toast.error("Something went wrong", {
+        description: "Please try again in a moment.",
+      });
     }
   };
 
@@ -214,7 +252,19 @@ export function LinkForm() {
 
         <FieldSet className="flex items-center justify-between">
           <Field orientation="horizontal">
-            <Button type="submit">Submit</Button>
+            <Button type="submit" disabled={form.formState.isSubmitting}>
+              {form.formState.isSubmitting ? (
+                <>
+                  <Loader2Icon className="size-4 animate-spin" aria-hidden />
+                  Saving link...
+                </>
+              ) : (
+                <>
+                  <PlusIcon className="size-4" aria-hidden />
+                  Save link
+                </>
+              )}
+            </Button>
             {/* <Button variant="outline" type="button">
               Cancel
             </Button> */}

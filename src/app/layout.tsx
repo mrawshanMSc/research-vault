@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { cn } from "@/lib/utils";
 import { siteUrl, authors } from "@/lib/info";
 import { LinkForm } from "@/components/link-form";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-sans",
@@ -104,6 +105,7 @@ export default function RootLayout({
             </div>
           </ThemeProvider>
         </main>
+        <Toaster />
       </body>
     </html>
   );
