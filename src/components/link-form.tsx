@@ -53,6 +53,7 @@ const linkFormSchema = z.object({
   title: z.string().trim().min(1, "Please enter a title for this link."),
   category: z.string().optional(),
   notes: z.string().optional(),
+  tags: z.string().optional(),
 });
 
 type LinkFormValues = z.infer<typeof linkFormSchema>;
@@ -94,17 +95,28 @@ export function LinkForm() {
       title: "",
       category: undefined,
       notes: "",
+      tags: "",
     },
   });
 
   const onSubmit = async (data: LinkFormValues) => {
+    const formattedData = {
+      ...data,
+      tags: data.tags
+        ? data.tags
+            .split(",")
+            .map((tag) => tag.trim())
+            .filter(Boolean)
+        : [],
+    };
+
     try {
       const res = await fetch("/api/links", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(formattedData),
       });
 
       const result = await res.json().catch(() => null);
@@ -245,6 +257,33 @@ export function LinkForm() {
                 </Field>
               )}
             />
+
+            <Controller
+              name="tags"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  {" "}
+                  <FieldLabel htmlFor="link-form-tags">Tags</FieldLabel>{" "}
+                  <Input
+                    {...field}
+                    id="link-form-tags"
+                    type="text"
+                    placeholder="AI, machine learning, distributed systems"
+                    autoComplete="off"
+                    aria-invalid={fieldState.invalid}
+                  />{" "}
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}{" "}
+                </Field>
+              )}
+            />
+
+            <p className="text-muted-foreground text-xs leading-5">
+              Separate tags with commas. Tags help with filtering and faster
+              search.
+            </p>
           </FieldGroup>
         </FieldSet>
 

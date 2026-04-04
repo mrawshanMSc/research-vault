@@ -1,4 +1,4 @@
-import { ExternalLink, FolderKanban } from "lucide-react";
+import { ExternalLink, FolderKanban, Tag } from "lucide-react";
 import { ResearchLinkCardActions } from "@/components/research-link-card-actions";
 import type { LinkCategory } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -87,6 +87,21 @@ export function ResearchLinkCard({
           </p>
         ) : null}
       </div>
+
+      {tags && tags.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {tags.map((tag, index) => (
+            <span
+              key={`${tag}-${index}`}
+              className="border-border bg-muted text-muted-foreground dark:bg-input/40 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium transition-colors"
+            >
+              <Tag className="size-3.5 shrink-0" aria-hidden />
+
+              {tag}
+            </span>
+          ))}
+        </div>
+      )}
 
       <div className="border-border pt-4.5 flex items-center gap-3 border-t">
         <ResearchLinkCardActions
