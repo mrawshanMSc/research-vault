@@ -125,3 +125,31 @@ export async function createLink(data: NormalizedLinkInput) {
 export function isValidLinkId(id: string) {
   return ObjectId.isValid(id);
 }
+
+export async function updateLink(id: string, data: NormalizedLinkInput) {
+  const collection = await getLinksCollection();
+  const objectId = new ObjectId(id);
+  const nextDocument = {
+    ...data,
+    updatedAt: new Date(),
+  };
+
+  const result = await collection.findOneAndUpdate(
+    { _id: objectId },
+    {
+      $set: nextDocument,
+    },
+    {
+      returnDocument: "after",
+    }
+  );
+
+  return result ? toLinkItem(result as LinkDocument & { _id: ObjectId }) : null;
+}
+
+export async function deleteLink(id: string) {
+  const collection = await getLinksCollection();
+  const result = await collection.deleteOne({ _id: new ObjectId(id) });
+
+  return result.deletedCount > 0;
+}

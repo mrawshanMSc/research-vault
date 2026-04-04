@@ -26,6 +26,8 @@ export type LinkItem = {
 
 export type CreateLinkInput = LinkInput;
 
+export type UpdateLinkInput = LinkInput;
+
 export type LinkFilters = {
   search: string;
   category: string;
