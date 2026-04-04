@@ -1,16 +1,30 @@
 import { NextResponse } from "next/server";
 import { createLink, listLinks } from "@/lib/links";
 import { validateCreateLinkInput } from "@/lib/validation";
+import type { LinkFilters } from "@/lib/types";
 
-export async function GET() {
+export const dynamic = "force-dynamic";
+
+function getFilterValue(value: string | string[] | undefined) {
+  return typeof value === "string" ? value : "";
+}
+
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const filters: LinkFilters = {
+    search: getFilterValue(searchParams.get("search") ?? undefined),
+    category: getFilterValue(searchParams.get("category") ?? undefined),
+    tag: getFilterValue(searchParams.get("tag") ?? undefined),
+  };
+
   try {
-    const links = await listLinks();
-
-    return NextResponse.json(links);
+    const links = await listLinks(filters);
+    return Response.json({ links, filters });
   } catch (error) {
-    console.error(error);
-    return NextResponse.json(
-      { error: "Failed to fetch links" },
+    console.error("Failed to load research links", error);
+
+    return Response.json(
+      { message: "Unable to load links right now." },
       { status: 500 }
     );
   }
