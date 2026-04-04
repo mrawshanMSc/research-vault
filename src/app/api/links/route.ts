@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { createLink, listLinks } from "@/lib/links";
 import { validateCreateLinkInput } from "@/lib/validation";
 
+export const dynamic = "force-dynamic";
+
 function getFilterValue(value: string | string[] | undefined) {
   return typeof value === "string" ? value : "";
 }
