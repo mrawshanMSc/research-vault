@@ -4,6 +4,14 @@ import { ResearchLinkCard } from "@/components/research-link-card";
 import { listLinks } from "@/lib/schemas/links";
 import type { LinkFilters } from "@/lib/types";
 
+type HomePageProps = {
+  searchParams: Promise<{
+    search?: string | string[];
+    category?: string | string[];
+    tag?: string | string[];
+  }>;
+};
+
 export const metadata: Metadata = {
   title: "ResearchVault - Home",
   description:
@@ -14,7 +22,7 @@ function getFilterValue(value: string | string[] | undefined) {
   return typeof value === "string" ? value : "";
 }
 
-async function getLinks(searchParams: PageProps<"/">["searchParams"]) {
+async function getLinks(searchParams: HomePageProps["searchParams"]) {
   await connection();
 
   const query = await searchParams;
@@ -27,7 +35,7 @@ async function getLinks(searchParams: PageProps<"/">["searchParams"]) {
   return listLinks(filters);
 }
 
-export default async function Home(props: PageProps<"/">) {
+export default async function Home(props: HomePageProps) {
   const links = await getLinks(props.searchParams);
 
   return (
