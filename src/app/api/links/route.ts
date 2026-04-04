@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createLink, listLinks } from "@/lib/schemas/links";
 import { validateLinkInput } from "@/lib/validation";
-import type { LinkFilters } from "@/lib/types";
+import type { CreateLinkInput, LinkFilters } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
@@ -30,23 +30,53 @@ export async function GET(request: Request) {
   }
 }
 
-export async function POST(req: Request) {
+export async function POST(request: Request) {
+  let body: Partial<CreateLinkInput> | null = null;
+
   try {
-    const body = await req.json();
+    body = (await request.json()) as Partial<CreateLinkInput>;
+  } catch {
+    return Response.json({ message: "Invalid request body." }, { status: 400 });
+  }
 
-    const { data, errors } = validateLinkInput(body);
+  const input: CreateLinkInput = {
+    url: String(body?.url ?? ""),
+    title: String(body?.title ?? ""),
+    notes: String(body?.notes ?? ""),
+    category: String(body?.category ?? ""),
+    tags: Array.isArray(body?.tags) ? body.tags.map((tag) => String(tag)) : [],
+  };
 
-    if (!data) {
-      return NextResponse.json({ errors }, { status: 400 });
-    }
+  const validation = validateLinkInput(input);
 
-    const newLink = await createLink(data);
+  if (!validation.data) {
+    return Response.json(
+      {
+        message: "Please fix the highlighted fields and try again.",
+        fieldErrors: validation.errors,
+      },
+      { status: 400 }
+    );
+  }
 
-    return NextResponse.json(newLink, { status: 201 });
+  try {
+    const link = await createLink(validation.data);
+
+    return Response.json(
+      {
+        message: "Research link saved to the vault.",
+        link,
+      },
+      { status: 201 }
+    );
   } catch (error) {
-    console.error(error);
-    return NextResponse.json(
-      { error: "Failed to create link" },
+    console.error("Failed to create research link", error);
+
+    return Response.json(
+      {
+        message:
+          "The link could not be saved right now. Check your MongoDB env vars and try again.",
+      },
       { status: 500 }
     );
   }
