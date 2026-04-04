@@ -4,6 +4,10 @@ import { FilePen, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import {
+  EditResearchLinkDialog,
+  type EditResearchLinkSnapshot,
+} from "@/components/edit-research-link-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -16,25 +20,22 @@ import {
 } from "@/components/ui/dialog";
 
 export type ResearchLinkCardActionsProps = {
-  linkId: string;
-  linkTitle: string;
-  onEdit?: (id: string) => void;
+  link: EditResearchLinkSnapshot;
 };
 
 export function ResearchLinkCardActions({
-  linkId,
-  linkTitle,
-  onEdit,
+  link,
 }: ResearchLinkCardActionsProps) {
   const router = useRouter();
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
 
   // Handle delete confirmation
   const handleConfirmDelete = async () => {
     setDeleting(true);
     try {
-      const res = await fetch(`/api/links/${encodeURIComponent(linkId)}`, {
+      const res = await fetch(`/api/links/${encodeURIComponent(link.id)}`, {
         method: "DELETE",
       });
 
@@ -69,7 +70,7 @@ export function ResearchLinkCardActions({
           type="button"
           variant="outline"
           size="sm"
-          onClick={() => onEdit?.(linkId)}
+          onClick={() => setEditOpen(true)}
         >
           <FilePen className="size-3.5 stroke-[1.5]" aria-hidden />
           Edit
@@ -85,6 +86,13 @@ export function ResearchLinkCardActions({
           Delete
         </Button>
       </div>
+
+      {/* Edit dialog */}
+      <EditResearchLinkDialog
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        link={link}
+      />
 
       <Dialog
         open={confirmOpen}
@@ -106,7 +114,7 @@ export function ResearchLinkCardActions({
             <DialogDescription className="text-sm leading-relaxed">
               This removes{" "}
               <strong className="text-foreground font-medium">
-                {linkTitle}
+                {link.title}
               </strong>{" "}
               from the shared vault. This action cannot be undone.
             </DialogDescription>
