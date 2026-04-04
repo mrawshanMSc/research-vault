@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { connection } from "next/server";
 import { ResearchLinkCard } from "@/components/research-link-card";
 import { listLinks } from "@/lib/schemas/links";
+import type { LinkFilters } from "@/lib/types";
 
 export const metadata: Metadata = {
   title: "ResearchVault - Home",
@@ -9,13 +10,25 @@ export const metadata: Metadata = {
     "Browse the latest saved research links, notes, and categories in the vault.",
 };
 
-async function getLinks() {
-  await connection();
-  return listLinks();
+function getFilterValue(value: string | string[] | undefined) {
+  return typeof value === "string" ? value : "";
 }
 
-export default async function Home() {
-  const links = await getLinks();
+async function getLinks(searchParams: PageProps<"/">["searchParams"]) {
+  await connection();
+
+  const query = await searchParams;
+  const filters: LinkFilters = {
+    search: getFilterValue(query.search),
+    category: getFilterValue(query.category),
+    tag: getFilterValue(query.tag),
+  };
+
+  return listLinks(filters);
+}
+
+export default async function Home(props: PageProps<"/">) {
+  const links = await getLinks(props.searchParams);
 
   return (
     <section className="border-border h-full w-full space-y-4 pb-24 lg:border-l lg:pl-6 lg:pt-24">
