@@ -22,9 +22,12 @@ export type LinkItem = {
   category: LinkCategory;
   tags: string[];
   createdAt: Date;
+  updatedAt: Date;
 };
 
 export type CreateLinkInput = LinkInput;
+
+export type UpdateLinkInput = LinkInput;
 
 export type LinkFilters = {
   search: string;
