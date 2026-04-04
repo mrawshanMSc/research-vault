@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import { getDb } from "@/lib/mongodb";
-import type { LinkItem } from "@/lib/types";
-import type { NormalizedCreateLinkInput } from "@/lib/validation";
+import type { LinkFilters, LinkItem } from "@/lib/types";
+import type { NormalizedLinkInput } from "@/lib/validation";
 
 const COLLECTION_NAME = "links";
 
@@ -11,38 +11,107 @@ type LinkDocument = {
   title: string;
   notes: string;
   category: LinkItem["category"];
-  createdAt: Date;
+  tags?: string[];
+  createdAt?: Date | string;
 };
 
 function getLinksCollection() {
   return getDb().then((db) => db.collection<LinkDocument>(COLLECTION_NAME));
 }
 
-export function buildLinkDocument(data: NormalizedCreateLinkInput) {
-  return {
-    ...data,
-    createdAt: new Date(),
-  };
+function toDate(value: Date | string | undefined, fallback: Date) {
+  if (value instanceof Date) {
+    return value;
+  }
+
+  if (typeof value === "string") {
+    const parsed = new Date(value);
+
+    if (!Number.isNaN(parsed.getTime())) {
+      return parsed;
+    }
+  }
+
+  return fallback;
 }
 
-export async function listLinks(): Promise<LinkItem[]> {
-  const collection = await getLinksCollection();
+function toLinkItem(document: LinkDocument & { _id: ObjectId }): LinkItem {
+  const createdAt = toDate(document.createdAt, new Date());
 
-  const documents = await collection.find({}).sort({ createdAt: -1 }).toArray();
-
-  return documents.map((document) => ({
-    id: document._id!.toHexString(),
+  return {
+    id: document._id.toHexString(),
     url: document.url,
     title: document.title,
     notes: document.notes,
     category: document.category,
-    createdAt: document.createdAt,
-  }));
+    tags: document.tags ?? [],
+    createdAt,
+  };
 }
 
-export async function createLink(data: NormalizedCreateLinkInput) {
-  const collection = await getLinksCollection();
+function escapeForRegex(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 
+function buildFiltersQuery(filters: Partial<LinkFilters>) {
+  const search = filters.search?.trim();
+  const category = filters.category?.trim();
+  const tag = filters.tag?.trim();
+  const clauses: Record<string, unknown>[] = [];
+
+  if (search) {
+    const pattern = new RegExp(escapeForRegex(search), "i");
+
+    clauses.push({
+      $or: [{ title: pattern }, { notes: pattern }, { tags: pattern }],
+    });
+  }
+
+  if (category) {
+    clauses.push({ category });
+  }
+
+  if (tag) {
+    clauses.push({
+      tags: {
+        $elemMatch: {
+          $regex: new RegExp(`^${escapeForRegex(tag)}$`, "i"),
+        },
+      },
+    });
+  }
+
+  if (clauses.length === 0) {
+    return {};
+  }
+
+  return clauses.length === 1 ? clauses[0] : { $and: clauses };
+}
+
+export function buildLinkDocument(data: NormalizedLinkInput) {
+  const now = new Date();
+
+  return {
+    ...data,
+    createdAt: now,
+  };
+}
+
+export async function listLinks(
+  filters: Partial<LinkFilters> = {}
+): Promise<LinkItem[]> {
+  const collection = await getLinksCollection();
+  const documents = await collection
+    .find(buildFiltersQuery(filters), { sort: { createdAt: -1 } })
+    .toArray();
+
+  return documents.map((document) =>
+    toLinkItem(document as LinkDocument & { _id: ObjectId })
+  );
+}
+
+export async function createLink(data: NormalizedLinkInput) {
+  const collection = await getLinksCollection();
   const document = buildLinkDocument(data);
 
   const result = await collection.insertOne(document);
@@ -51,4 +120,8 @@ export async function createLink(data: NormalizedCreateLinkInput) {
     id: result.insertedId.toHexString(),
     ...document,
   };
+}
+
+export function isValidLinkId(id: string) {
+  return ObjectId.isValid(id);
 }

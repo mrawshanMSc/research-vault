@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createLink, listLinks } from "@/lib/links";
-import { validateCreateLinkInput } from "@/lib/validation";
+import { validateLinkInput } from "@/lib/validation";
 import type { LinkFilters } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -34,7 +34,7 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    const { data, errors } = validateCreateLinkInput(body);
+    const { data, errors } = validateLinkInput(body);
 
     if (!data) {
       return NextResponse.json({ errors }, { status: 400 });
