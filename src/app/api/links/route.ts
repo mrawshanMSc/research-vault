@@ -2,9 +2,21 @@ import { NextResponse } from "next/server";
 import { createLink, listLinks } from "@/lib/links";
 import { validateCreateLinkInput } from "@/lib/validation";
 
-export async function GET() {
+function getFilterValue(value: string | string[] | undefined) {
+  return typeof value === "string" ? value : "";
+}
+
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+
+  const filters: LinkFilters = {
+    search: getFilterValue(searchParams.get("search") ?? undefined),
+    category: getFilterValue(searchParams.get("category") ?? undefined),
+    tag: getFilterValue(searchParams.get("tag") ?? undefined),
+  };
+
   try {
-    const links = await listLinks();
+    const links = await listLinks(filters);
 
     return NextResponse.json(links);
   } catch (error) {
