@@ -37,15 +37,18 @@ export function ResearchLinkCard({
   return (
     <article
       className={cn(
-        "border-border bg-card flex flex-col gap-3.5 rounded-2xl border p-6",
+        "border-border bg-card hover:bg-primary/2 py-5.5 flex w-full min-w-0 flex-col gap-3.5 overflow-hidden rounded-2xl border px-5 transition-colors duration-300 ease-in-out",
         className
       )}
     >
       <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
-        <span className="bg-primary/10 border-primary/35 text-primary inline-flex items-center gap-1.5 rounded-md border px-2.5 py-0.5 text-xs font-medium">
-          <FolderKanban className="size-3.5 shrink-0" aria-hidden />
-          {category}
-        </span>
+        {category && (
+          <span className="bg-primary/10 border-primary/35 text-primary inline-flex items-center gap-1.5 rounded-md border px-2.5 py-0.5 text-xs font-medium">
+            <FolderKanban className="size-3.5 shrink-0" aria-hidden />
+            {category}
+          </span>
+        )}
+
         {date && !isNaN(date.getTime()) && (
           <time
             dateTime={date.toISOString()}
@@ -60,12 +63,12 @@ export function ResearchLinkCard({
         {title}
       </h3>
 
-      <p className="flex min-w-0 items-center gap-1.5">
+      <p className="flex min-w-0 max-w-full items-center gap-1.5">
         <a
           href={url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-primary min-w-0 flex-1 truncate text-sm font-medium underline underline-offset-2"
+          className="text-primary max-w-full truncate break-all text-sm font-medium underline underline-offset-2"
         >
           {url}
         </a>
