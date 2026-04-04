@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import { createLink, listLinks } from "@/lib/schemas/links";
 import { validateLinkInput } from "@/lib/validation";
 import type { CreateLinkInput, LinkFilters } from "@/lib/types";

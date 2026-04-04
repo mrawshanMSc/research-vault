@@ -83,7 +83,6 @@ describe("POST /api/links", () => {
     };
 
     vi.spyOn(validationModule, "validateLinkInput").mockReturnValue({
-      // vi.mocked(validationModule).validateLinkInput = vi.fn().mockReturnValue({
       data: mockInput,
       errors: {},
     });
@@ -100,8 +99,11 @@ describe("POST /api/links", () => {
 
     expect(response.status).toBe(201);
     expect(data).toEqual({
-      ...mockCreatedLink,
-      createdAt: mockCreatedLink.createdAt.toISOString(),
+      message: "Research link saved to the vault.",
+      link: {
+        ...mockCreatedLink,
+        createdAt: mockCreatedLink.createdAt.toISOString(),
+      },
     });
   });
 
@@ -114,7 +116,6 @@ describe("POST /api/links", () => {
     };
 
     vi.spyOn(validationModule, "validateLinkInput").mockReturnValue({
-      // vi.mocked(validationModule).validateLinkInput = vi.fn().mockReturnValue({
       data: null,
       errors: {
         url: "A research URL is required.",
@@ -131,7 +132,8 @@ describe("POST /api/links", () => {
 
     expect(response.status).toBe(400);
     expect(data).toEqual({
-      errors: {
+      message: "Please fix the highlighted fields and try again.",
+      fieldErrors: {
         url: "A research URL is required.",
       },
     });
@@ -147,7 +149,6 @@ describe("POST /api/links", () => {
     };
 
     vi.spyOn(validationModule, "validateLinkInput").mockReturnValue({
-      // vi.mocked(validationModule).validateLinkInput = vi.fn().mockReturnValue({
       data: mockInput,
       errors: {},
     });
@@ -166,7 +167,8 @@ describe("POST /api/links", () => {
 
     expect(response.status).toBe(500);
     expect(data).toEqual({
-      error: "Failed to create link",
+      message:
+        "The link could not be saved right now. Check your MongoDB env vars and try again.",
     });
   });
 });
