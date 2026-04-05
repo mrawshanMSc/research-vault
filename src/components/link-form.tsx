@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import * as z from "zod";
 import {
   Field,
+  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
@@ -276,14 +277,13 @@ export function LinkForm() {
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}{" "}
+                  <FieldDescription>
+                    Separate tags with commas. Tags help with filtering and
+                    faster search
+                  </FieldDescription>
                 </Field>
               )}
             />
-
-            <p className="text-muted-foreground text-xs leading-5">
-              Separate tags with commas. Tags help with filtering and faster
-              search.
-            </p>
           </FieldGroup>
         </FieldSet>
 
