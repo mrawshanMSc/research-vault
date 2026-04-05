@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { ResearchLinkCard } from "@/components/research-link-card";
 import { listLinks } from "@/lib/schemas/links";
-import type { LinkFilters as LinkFiltersType } from "@/lib/types";
+import {
+  DEFAULT_LINK_SORT,
+  type LinkFilters as LinkFiltersType,
+} from "@/lib/types";
 import { LinkFilters } from "@/components/link-filters";
 
 type HomePageProps = {
@@ -9,6 +12,9 @@ type HomePageProps = {
     search?: string | string[];
     category?: string | string[];
     tag?: string | string[];
+    status?: string | string[];
+    favorite?: string | string[];
+    sort?: string | string[];
   }>;
 };
 
@@ -29,6 +35,10 @@ export default async function Home(props: HomePageProps) {
     search: getFilterValue(query.search),
     category: getFilterValue(query.category),
     tag: getFilterValue(query.tag),
+    status: getFilterValue(query.status),
+    favorite: getFilterValue(query.favorite),
+    sort: (getFilterValue(query.sort) ||
+      DEFAULT_LINK_SORT) as LinkFiltersType["sort"],
   };
 
   const links = await listLinks(filters);
