@@ -41,12 +41,16 @@ describe("GET /api/links", () => {
         {
           ...mockLinks[0],
           createdAt: mockLinks[0].createdAt.toISOString(),
+          updatedAt: mockLinks[0].updatedAt.toISOString(),
         },
       ],
       filters: {
         search: "",
         category: "",
         tag: "",
+        status: "",
+        favorite: "",
+        sort: "newest",
       },
     });
   });
@@ -114,6 +118,7 @@ describe("POST /api/links", () => {
       link: {
         ...mockCreatedLink,
         createdAt: mockCreatedLink.createdAt.toISOString(),
+        updatedAt: mockCreatedLink.updatedAt.toISOString(),
       },
       duplicateWarning: null,
     });
