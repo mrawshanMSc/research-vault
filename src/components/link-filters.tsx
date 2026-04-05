@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -103,7 +104,7 @@ export function LinkFilters({ filters }: { filters: LinkFilters }) {
           ) : null}
         </div>
 
-        <div className="grid gap-3 md:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)_minmax(0,1fr)_auto]">
+        <div className="grid items-center gap-3 md:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)_minmax(0,1fr)_auto]">
           <div className="relative">
             <Search className="text-muted-foreground pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2" />
             <Input
@@ -132,12 +133,14 @@ export function LinkFilters({ filters }: { filters: LinkFilters }) {
               <SelectValue placeholder="All categories" />
             </SelectTrigger>
             <SelectContent position="popper">
-              <SelectItem value="all">All categories</SelectItem>
-              {LINK_CATEGORIES.map((category) => (
-                <SelectItem key={category} value={category}>
-                  {category}
-                </SelectItem>
-              ))}
+              <SelectGroup>
+                <SelectItem value="all">All categories</SelectItem>
+                {LINK_CATEGORIES.map((category) => (
+                  <SelectItem key={category} value={category}>
+                    {category}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
             </SelectContent>
           </Select>
 
@@ -152,7 +155,12 @@ export function LinkFilters({ filters }: { filters: LinkFilters }) {
             placeholder="Filter by tag"
           />
 
-          <Button type="submit" size="lg" disabled={isPending}>
+          <Button
+            type="submit"
+            size="lg"
+            disabled={isPending}
+            className="md:h-full"
+          >
             {isPending ? (
               <>
                 <LoaderCircle className="animate-spin" />
