@@ -83,9 +83,9 @@ export function LinkFilters({ filters }: { filters: LinkFilters }) {
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-xl font-medium tracking-tight">
+            <h3 className="text-xl font-medium tracking-tight">
               Find saved research faster
-            </h2>
+            </h3>
             <p className="text-muted-foreground text-sm leading-6">
               Search by title, notes, or tags, then narrow the vault by category
               or a single tag.

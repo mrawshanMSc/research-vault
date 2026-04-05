@@ -291,7 +291,11 @@ export function LinkForm() {
 
         <FieldSet className="flex items-center justify-between">
           <Field orientation="horizontal">
-            <Button type="submit" disabled={form.formState.isSubmitting}>
+            <Button
+              type="submit"
+              className="h-10"
+              disabled={form.formState.isSubmitting}
+            >
               {form.formState.isSubmitting ? (
                 <>
                   <Loader2Icon className="size-4 animate-spin" aria-hidden />
