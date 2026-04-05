@@ -21,12 +21,16 @@ describe("PATCH /api/links/[id]", () => {
       notes: "Test",
       category: "Journal Article" as const,
       tags: [],
+      status: "To Read" as const,
+      isFavorite: false,
+      normalizedUrl: "example.com/",
     };
 
     const mockUpdatedLink = {
       id: validId,
       ...mockInput,
       createdAt: new Date(),
+      updatedAt: new Date(),
     };
 
     vi.spyOn(linksModule, "isValidLinkId").mockReturnValue(true);
@@ -52,6 +56,7 @@ describe("PATCH /api/links/[id]", () => {
       link: {
         ...mockUpdatedLink,
         createdAt: mockUpdatedLink.createdAt.toISOString(),
+        updatedAt: mockUpdatedLink.updatedAt.toISOString(),
       },
     });
   });
@@ -106,8 +111,11 @@ describe("PATCH /api/links/[id]", () => {
         url: "https://example.com",
         title: "Test",
         notes: "",
-        category: "Journal Article" as const,
+        category: "Journal Article",
         tags: [],
+        status: "To Read",
+        isFavorite: false,
+        normalizedUrl: "example.com/",
       },
       errors: {},
     });
@@ -136,6 +144,9 @@ describe("PATCH /api/links/[id]", () => {
         notes: "",
         category: "Journal Article",
         tags: [],
+        status: "To Read",
+        isFavorite: false,
+        normalizedUrl: "example.com/",
       },
       errors: {},
     });

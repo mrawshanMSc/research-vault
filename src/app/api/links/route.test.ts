@@ -20,7 +20,11 @@ describe("GET /api/links", () => {
         notes: "Test",
         category: "Journal Article" as const,
         tags: [],
+        status: "To Read" as const,
+        isFavorite: false,
+        normalizedUrl: "example.com/",
         createdAt: new Date(),
+        updatedAt: new Date(),
       },
     ];
 
@@ -74,12 +78,16 @@ describe("POST /api/links", () => {
       notes: "Test",
       category: "Journal Article" as const,
       tags: [],
+      status: "To Read",
+      isFavorite: false,
+      normalizedUrl: "example.com/",
     };
 
     const mockCreatedLink = {
       id: "1",
       ...mockInput,
       createdAt: new Date(),
+      updatedAt: new Date(),
     };
 
     vi.spyOn(validationModule, "validateLinkInput").mockReturnValue({
@@ -87,7 +95,10 @@ describe("POST /api/links", () => {
       errors: {},
     });
 
-    vi.spyOn(linksModule, "createLink").mockResolvedValue(mockCreatedLink);
+    vi.spyOn(linksModule, "createLink").mockResolvedValue({
+      link: mockCreatedLink,
+      duplicateWarning: null,
+    });
 
     const request = new Request("http://localhost/api/links", {
       method: "POST",
@@ -104,6 +115,7 @@ describe("POST /api/links", () => {
         ...mockCreatedLink,
         createdAt: mockCreatedLink.createdAt.toISOString(),
       },
+      duplicateWarning: null,
     });
   });
 
@@ -146,6 +158,9 @@ describe("POST /api/links", () => {
       notes: "Test",
       category: "Journal Article" as const,
       tags: [],
+      status: "To Read",
+      isFavorite: false,
+      normalizedUrl: "example.com/",
     };
 
     vi.spyOn(validationModule, "validateLinkInput").mockReturnValue({
