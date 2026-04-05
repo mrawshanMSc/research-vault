@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
+import { LinksToolbar } from "@/components/links-toolbar";
 import { ResearchLinkCard } from "@/components/research-link-card";
 import { listLinks } from "@/lib/schemas/links";
 import {
   DEFAULT_LINK_SORT,
+  LINK_STATUSES,
   type LinkFilters as LinkFiltersType,
+  type LinkStatus,
 } from "@/lib/types";
-import { LinkFilters } from "@/components/link-filters";
 
 type HomePageProps = {
   searchParams: Promise<{
@@ -41,25 +43,43 @@ export default async function Home(props: HomePageProps) {
       DEFAULT_LINK_SORT) as LinkFiltersType["sort"],
   };
 
-  const links = await listLinks(filters);
+  const countFilters: LinkFiltersType = {
+    ...filters,
+    status: "",
+  };
+
+  const [links, countSourceLinks] = await Promise.all([
+    listLinks(filters),
+    listLinks(countFilters),
+  ]);
+
+  const statusCounts = LINK_STATUSES.reduce(
+    (counts, status) => {
+      counts[status] = countSourceLinks.filter(
+        (link) => link.status === status
+      ).length;
+      return counts;
+    },
+    {} as Record<LinkStatus, number>
+  );
 
   return (
     <>
-      <section className="border-border h-full w-full space-y-4 pb-24 lg:border-l lg:pl-6 lg:pt-24">
-        <LinkFilters filters={filters} />
+      <section className="border-border h-full w-full space-y-4 pb-24 lg:border-l lg:pl-6">
+        <LinksToolbar filters={filters} statusCounts={statusCounts} />
 
         {/* <h2 className="text-2xl font-medium tracking-tight">
           Shared Research Vault
         </h2> */}
 
         {links.length > 0 ? (
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 md:grid-cols-1">
             {links.map((link) => (
               <ResearchLinkCard key={link.id} {...link} />
             ))}
           </div>
         ) : (
-          <div className="border-border bg-accent/10 py-5.5 rounded-lg border border-dashed px-5">
+          <div className="border-border bg-accent/15 py-4.5 rounded-xl border border-dashed px-4">
             <p className="text-base font-medium">No links yet</p>
             <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
               Add your first research source from the form on the left and it

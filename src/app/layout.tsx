@@ -86,7 +86,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <div className="mx-auto w-full max-w-screen-2xl flex-1 px-4 md:px-8 lg:px-20">
-              <div className="grid min-h-dvh gap-12 lg:grid-cols-12 lg:gap-6">
+              <div className="grid min-h-dvh gap-0 lg:grid-cols-12 lg:gap-6">
                 <div className="lg:col-span-5">
                   <div className="flex flex-col justify-center gap-6 pt-24 lg:sticky lg:top-0 lg:h-dvh lg:pb-24">
                     <Image

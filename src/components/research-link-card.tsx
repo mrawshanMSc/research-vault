@@ -82,7 +82,7 @@ export function ResearchLinkCard({
 
       <div className="min-w-0 flex-1">
         {notes ? (
-          <p className="text-muted-foreground line-clamp-1 text-sm leading-snug">
+          <p className="text-muted-foreground line-clamp-3 text-sm leading-snug">
             {notes}
           </p>
         ) : null}
