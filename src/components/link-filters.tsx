@@ -88,7 +88,7 @@ export function LinkFilters({ filters }: { filters: LinkFilters }) {
   return (
     <form onSubmit={handleSubmit} className="rounded-xl border p-4">
       <div className="flex flex-col gap-4">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-2 sm:flex-row sm:justify-between">
           <div>
             <h3 className="text-xl font-medium tracking-tight">
               Find saved research faster
@@ -101,7 +101,7 @@ export function LinkFilters({ filters }: { filters: LinkFilters }) {
           {hasActiveFilters ? (
             <Button
               type="button"
-              variant="ghost"
+              variant="secondary"
               size="sm"
               onClick={handleReset}
             >
