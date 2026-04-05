@@ -93,7 +93,7 @@ export function ResearchLinkCard({
           {tags.map((tag, index) => (
             <span
               key={`${tag}-${index}`}
-              className="border-border bg-muted text-muted-foreground dark:bg-input/40 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium transition-colors"
+              className="border-border bg-muted text-muted-foreground dark:bg-input/40 inline-flex items-center gap-1.5 rounded-md border px-2 py-0.5 text-xs font-medium transition-colors"
             >
               <Tag className="size-3.5 shrink-0" aria-hidden />
 

@@ -37,7 +37,7 @@ import { LINK_CATEGORIES } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 const modalFieldClass =
-  "border-neutral-200 bg-neutral-50/90 text-neutral-900 placeholder:text-neutral-500";
+  "border-primary/10 bg-primary/3 text-foreground placeholder:text-muted-foreground";
 
 export type EditResearchLinkSnapshot = {
   id: string;
@@ -188,17 +188,15 @@ export function EditResearchLinkDialog({
     >
       <DialogContent
         showCloseButton={!saving}
-        className={cn(
-          "flex max-h-[min(90vh,calc(100vh-2rem))] w-[min(46rem,calc(100vw-3rem))] max-w-[min(46rem,calc(100vw-3rem))] flex-col gap-0 overflow-hidden rounded-3xl border border-neutral-200 bg-white p-6 text-base text-neutral-900 shadow-lg sm:max-w-[min(46rem,calc(100vw-3rem))]"
-        )}
+        className={cn("md:min-w-2xl")}
         onPointerDownOutside={(e) => saving && e.preventDefault()}
         onEscapeKeyDown={(e) => saving && e.preventDefault()}
       >
-        <DialogHeader className="shrink-0 gap-2 px-2.5 pb-5 pr-10 text-left">
-          <DialogTitle className="text-xl font-semibold tracking-tight text-neutral-900">
+        <DialogHeader className="">
+          <DialogTitle className="text-lg font-medium leading-snug tracking-tight">
             Edit research link
           </DialogTitle>
-          <DialogDescription className="text-sm leading-relaxed text-neutral-600">
+          <DialogDescription className="text-muted-foreground -mt-1 text-sm leading-relaxed">
             Update the source details, notes, category, or tags without losing
             the original capture date.
           </DialogDescription>
@@ -208,7 +206,7 @@ export function EditResearchLinkDialog({
           <form
             id="edit-research-link-form"
             onSubmit={handleSubmit}
-            className="flex min-h-0 min-w-0 flex-1 flex-col gap-5 overflow-y-auto px-2.5"
+            className=""
           >
             <FieldGroup className="gap-5">
               <Field data-invalid={!!fieldErrors.url}>
@@ -344,8 +342,6 @@ export function EditResearchLinkDialog({
             </FieldGroup>
           </form>
         </div>
-
-        <Separator className="my-5 shrink-0 bg-neutral-200" />
 
         <DialogFooter className="-mx-6 -mb-6 rounded-b-3xl border-neutral-200 sm:flex-row sm:justify-end">
           <DialogClose asChild>
