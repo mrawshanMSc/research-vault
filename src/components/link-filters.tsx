@@ -10,7 +10,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { DEFAULT_LINK_SORT, LINK_CATEGORIES, type LinkFilters } from "@/lib/types";
+import {
+  DEFAULT_LINK_SORT,
+  LINK_CATEGORIES,
+  type LinkFilters,
+} from "@/lib/types";
 import { LoaderCircle, Search, SlidersHorizontal, X } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { startTransition, useEffect, useState } from "react";
