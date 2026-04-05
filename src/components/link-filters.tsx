@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LINK_CATEGORIES, type LinkFilters } from "@/lib/types";
+import { DEFAULT_LINK_SORT, LINK_CATEGORIES, type LinkFilters } from "@/lib/types";
 import { LoaderCircle, Search, SlidersHorizontal, X } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { startTransition, useEffect, useState } from "react";
@@ -19,6 +19,9 @@ const initialFilters: LinkFilters = {
   search: "",
   category: "",
   tag: "",
+  status: "",
+  favorite: "",
+  sort: DEFAULT_LINK_SORT,
 };
 
 export function LinkFilters({ filters }: { filters: LinkFilters }) {
