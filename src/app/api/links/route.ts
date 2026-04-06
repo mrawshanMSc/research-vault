@@ -1,4 +1,4 @@
-import { createLink, listLinks } from "@/lib/schemas/links";
+import { createLink, listLinks } from "@/lib/services/links.service";
 import {
   DEFAULT_LINK_SORT,
   DEFAULT_LINK_STATUS,

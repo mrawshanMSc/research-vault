@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { PATCH, DELETE } from "./route";
-import * as linksModule from "@/lib/schemas/links";
+import * as linksModule from "@/lib/services/links.service";
 import * as validationModule from "@/lib/validation";
 
 const mockContext = (id: string) => ({

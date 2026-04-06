@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { LinksToolbar } from "@/components/links-toolbar";
 import { ResearchLinkCard } from "@/components/research-link-card";
-import { listLinks } from "@/lib/schemas/links";
+import { listLinks } from "@/lib/services/links.service";
 import {
   DEFAULT_LINK_SORT,
   LINK_STATUSES,
