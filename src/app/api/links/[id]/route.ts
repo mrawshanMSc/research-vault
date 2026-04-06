@@ -1,4 +1,8 @@
-import { deleteLink, isValidLinkId, updateLink } from "@/lib/services/links.service";
+import {
+  deleteLink,
+  isValidLinkId,
+  updateLink,
+} from "@/lib/services/links.service";
 import { DEFAULT_LINK_STATUS, type UpdateLinkInput } from "@/lib/types";
 import { validateLinkInput } from "@/lib/validation";
 

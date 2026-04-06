@@ -22,10 +22,7 @@ async function getCollection() {
   return db.collection<LinkDocument>(COLLECTION_NAME);
 }
 
-export async function findLinks(
-  query: Filter<LinkDocument>,
-  sort: Sort
-) {
+export async function findLinks(query: Filter<LinkDocument>, sort: Sort) {
   const collection = await getCollection();
   return collection.find(query, { sort }).toArray();
 }
