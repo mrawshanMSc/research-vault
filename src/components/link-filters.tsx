@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -105,14 +106,14 @@ export function LinkFilters({ filters }: { filters: LinkFilters }) {
       className="border-border bg-card rounded-xl border p-4"
     >
       <div className="flex flex-col gap-4">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h2 className="text-xl font-medium tracking-tight">
               Find and prioritize research faster
             </h2>
             <p className="text-muted-foreground text-sm leading-6">
-              Combine content filters with workflow controls to keep the Sprint
-              3 vault easier to review and demo.
+              Combine content filters with workflow controls to surface the
+              right sources faster.
             </p>
           </div>
           {hasActiveFilters ? (
@@ -129,7 +130,7 @@ export function LinkFilters({ filters }: { filters: LinkFilters }) {
         </div>
 
         <div className="grid gap-3 md:grid-cols-2">
-          <div className="relative md:col-span-2 xl:col-span-1">
+          <div className="relative col-span-2">
             <Search className="text-muted-foreground pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2" />
             <Input
               value={values.search}
@@ -157,12 +158,14 @@ export function LinkFilters({ filters }: { filters: LinkFilters }) {
               <SelectValue placeholder="All categories" />
             </SelectTrigger>
             <SelectContent position="popper">
-              <SelectItem value="all">All categories</SelectItem>
-              {LINK_CATEGORIES.map((category) => (
-                <SelectItem key={category} value={category}>
-                  {category}
-                </SelectItem>
-              ))}
+              <SelectGroup>
+                <SelectItem value="all">All categories</SelectItem>
+                {LINK_CATEGORIES.map((category) => (
+                  <SelectItem key={category} value={category}>
+                    {category}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
             </SelectContent>
           </Select>
 
@@ -190,12 +193,14 @@ export function LinkFilters({ filters }: { filters: LinkFilters }) {
               <SelectValue placeholder="All statuses" />
             </SelectTrigger>
             <SelectContent position="popper">
-              <SelectItem value="all">All statuses</SelectItem>
-              {LINK_STATUSES.map((status) => (
-                <SelectItem key={status} value={status}>
-                  {status}
-                </SelectItem>
-              ))}
+              <SelectGroup>
+                <SelectItem value="all">All statuses</SelectItem>
+                {LINK_STATUSES.map((status) => (
+                  <SelectItem key={status} value={status}>
+                    {status}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
             </SelectContent>
           </Select>
 
@@ -212,8 +217,10 @@ export function LinkFilters({ filters }: { filters: LinkFilters }) {
               <SelectValue placeholder="All items" />
             </SelectTrigger>
             <SelectContent position="popper">
-              <SelectItem value="all">All items</SelectItem>
-              <SelectItem value="true">Favorites only</SelectItem>
+              <SelectGroup>
+                <SelectItem value="all">All items</SelectItem>
+                <SelectItem value="true">Favorites only</SelectItem>
+              </SelectGroup>
             </SelectContent>
           </Select>
 
@@ -230,11 +237,13 @@ export function LinkFilters({ filters }: { filters: LinkFilters }) {
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
             <SelectContent position="popper">
-              {LINK_SORT_OPTIONS.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
+              <SelectGroup>
+                {LINK_SORT_OPTIONS.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
             </SelectContent>
           </Select>
 

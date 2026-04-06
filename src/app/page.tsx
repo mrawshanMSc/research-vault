@@ -23,7 +23,7 @@ type HomePageProps = {
 export const metadata: Metadata = {
   title: "ResearchVault - Home",
   description:
-    "Browse the latest saved research links, notes, and categories in the vault.",
+    "Browse saved research links, notes, and categories in ResearchVault.",
 };
 
 function getFilterValue(value: string | string[] | undefined) {
@@ -91,8 +91,7 @@ export default async function Home(props: HomePageProps) {
           <div className="border-border bg-accent/15 py-4.5 rounded-xl border border-dashed px-4">
             <p className="text-base font-medium">No links yet</p>
             <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-              Add your first research source from the form on the left and it
-              will show up here.
+              Add your first research source to start building your library.
             </p>
           </div>
         )}

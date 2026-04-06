@@ -28,6 +28,11 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { LINK_CATEGORIES } from "@/lib/types";
+import {
+  MAX_NOTES_LENGTH,
+  MAX_TAG_LENGTH,
+  type LinkFieldErrors,
+} from "@/lib/validation";
 import { Button } from "./ui/button";
 
 // Define the form schema
@@ -55,8 +60,24 @@ const linkFormSchema = z.object({
     }),
   title: z.string().trim().min(1, "Please enter a title for this link."),
   category: z.string().optional(),
-  notes: z.string().optional(),
-  tags: z.string().optional(),
+  notes: z
+    .string()
+    .trim()
+    .max(MAX_NOTES_LENGTH, `Keep notes under ${MAX_NOTES_LENGTH} characters.`),
+  tags: z
+    .string()
+    .trim()
+    .refine(
+      (value) =>
+        value
+          .split(",")
+          .map((tag) => tag.trim())
+          .filter(Boolean)
+          .every((tag) => tag.length <= MAX_TAG_LENGTH),
+      {
+        message: `Keep each tag under ${MAX_TAG_LENGTH} characters.`,
+      }
+    ),
 });
 
 type LinkFormValues = z.infer<typeof linkFormSchema>;
@@ -64,6 +85,25 @@ type LinkFormValues = z.infer<typeof linkFormSchema>;
 function getCreateLinkErrorMessage(result: unknown) {
   if (!result || typeof result !== "object") {
     return "Something went wrong while saving the link.";
+  }
+
+  if ("message" in result && typeof result.message === "string") {
+    return result.message;
+  }
+
+  if (
+    "fieldErrors" in result &&
+    result.fieldErrors &&
+    typeof result.fieldErrors === "object" &&
+    !Array.isArray(result.fieldErrors)
+  ) {
+    const firstFieldError = Object.values(result.fieldErrors).find(
+      (value) => typeof value === "string" && value.trim().length > 0
+    );
+
+    if (typeof firstFieldError === "string") {
+      return firstFieldError;
+    }
   }
 
   if (
@@ -106,6 +146,23 @@ export function LinkForm() {
     existingLink: { title: string; status: string };
   } | null>(null);
 
+  function applyServerFieldErrors(fieldErrors: LinkFieldErrors) {
+    (
+      Object.entries(fieldErrors) as Array<
+        [keyof LinkFormValues, string | undefined]
+      >
+    ).forEach(([name, message]) => {
+      if (!message) {
+        return;
+      }
+
+      form.setError(name, {
+        type: "server",
+        message,
+      });
+    });
+  }
+
   const onSubmit = async (data: LinkFormValues) => {
     const formattedData = {
       ...data,
@@ -129,6 +186,18 @@ export function LinkForm() {
       const result = await res.json().catch(() => null);
 
       if (!res.ok) {
+        if (
+          res.status === 400 &&
+          result &&
+          typeof result === "object" &&
+          "fieldErrors" in result &&
+          result.fieldErrors &&
+          typeof result.fieldErrors === "object" &&
+          !Array.isArray(result.fieldErrors)
+        ) {
+          applyServerFieldErrors(result.fieldErrors as LinkFieldErrors);
+        }
+
         toast.error("Could not create link", {
           description: getCreateLinkErrorMessage(result),
         });
@@ -170,8 +239,8 @@ export function LinkForm() {
           Capture a research link
         </h2>
         <p className="text-sm">
-          Save the source, add quick notes, and keep the research vault
-          organized from day one.
+          Save a source, add quick notes, and keep your research organized in
+          one place.
         </p>
       </div>
 
@@ -231,8 +300,8 @@ export function LinkForm() {
                 <Controller
                   name="category"
                   control={form.control}
-                  render={({ field }) => (
-                    <Field>
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
                       <FieldLabel htmlFor="link-form-category">
                         Category
                       </FieldLabel>
@@ -243,6 +312,7 @@ export function LinkForm() {
                         <SelectTrigger
                           id="link-form-category"
                           className="w-full"
+                          aria-invalid={fieldState.invalid}
                         >
                           <SelectValue placeholder="Select a category" />
                         </SelectTrigger>
@@ -256,6 +326,9 @@ export function LinkForm() {
                           </SelectGroup>
                         </SelectContent>
                       </Select>
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
                     </Field>
                   )}
                 />
@@ -265,15 +338,29 @@ export function LinkForm() {
             <Controller
               name="notes"
               control={form.control}
-              render={({ field }) => (
-                <Field>
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor="link-form-notes">Notes</FieldLabel>
                   <Textarea
                     {...field}
                     id="link-form-notes"
                     placeholder="Why is this source useful? Key takeaways, methodology, or critique."
+                    maxLength={MAX_NOTES_LENGTH}
                     className="min-h-20 resize-y"
+                    aria-invalid={fieldState.invalid}
                   />
+                  <div className="flex items-start justify-between gap-3">
+                    {fieldState.invalid ? (
+                      <FieldError errors={[fieldState.error]} />
+                    ) : (
+                      <FieldDescription>
+                        Keep notes concise so the card preview stays readable.
+                      </FieldDescription>
+                    )}
+                    <FieldDescription className="shrink-0 text-xs tabular-nums">
+                      {field.value.length}/{MAX_NOTES_LENGTH}
+                    </FieldDescription>
+                  </div>
                 </Field>
               )}
             />
@@ -295,10 +382,10 @@ export function LinkForm() {
                   />{" "}
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
-                  )}{" "}
+                  )}
                   <FieldDescription>
-                    Separate tags with commas. Tags help with filtering and
-                    faster search
+                    Separate tags with commas. Each tag can be up to{" "}
+                    {MAX_TAG_LENGTH} characters.
                   </FieldDescription>
                 </Field>
               )}
@@ -307,14 +394,19 @@ export function LinkForm() {
         </FieldSet>
 
         {duplicateWarning && (
-          <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-500/30 dark:bg-amber-950/30 dark:text-amber-100">
+          <div className="border-primary/15 bg-primary/10 rounded-xl border px-3 py-3.5">
             <div className="flex items-start gap-2">
-              <AlertTriangle className="mt-0.5 size-4 shrink-0" />
+              <AlertTriangle className="text-primary mt-1 size-4 shrink-0" />
               <div className="space-y-1">
-                <p className="font-medium">{duplicateWarning.message}</p>
-                <p className="text-xs leading-5 text-amber-800 dark:text-amber-200">
-                  Existing item: {duplicateWarning.existingLink.title} (
-                  {duplicateWarning.existingLink.status})
+                <p className="text-sm font-medium">
+                  {duplicateWarning.message}
+                </p>
+                <p className="text-primary text-xs leading-5">
+                  Existing item:{" "}
+                  <span className="">
+                    {duplicateWarning.existingLink.title} (
+                    {duplicateWarning.existingLink.status})
+                  </span>
                 </p>
               </div>
             </div>

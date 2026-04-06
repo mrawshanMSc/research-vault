@@ -100,7 +100,7 @@ export function ResearchLinkCardActions({
       }
 
       toast.success("Link removed", {
-        description: "The item was removed from the shared vault.",
+        description: "The item has been removed.",
       });
       setConfirmOpen(false);
       router.refresh();
@@ -213,10 +213,10 @@ export function ResearchLinkCardActions({
         <div className="ml-auto flex min-w-0 shrink-0 flex-row flex-wrap items-center justify-end gap-2">
           <Button
             type="button"
-            variant="outline"
-            size="sm"
+            variant={isFavorite ? "default" : "outline"}
+            size="icon-sm"
             disabled={favoriteLoading}
-            className="border-border bg-background text-foreground shrink-0 rounded-full font-normal shadow-none"
+            className=""
             onClick={handleToggleFavorite}
           >
             {favoriteLoading ? (
@@ -228,12 +228,12 @@ export function ResearchLinkCardActions({
               <StarIcon
                 className={cn(
                   "size-3.5 shrink-0 stroke-[1.5]",
-                  isFavorite && "fill-primary text-primary"
+                  isFavorite && "fill-background text-background"
                 )}
                 aria-hidden
               />
             )}
-            {isFavorite ? "Favorited" : "Mark Favorite"}
+            {/* {isFavorite ? "Favorited" : "Mark Favorite"} */}
           </Button>
 
           <Select
@@ -244,24 +244,14 @@ export function ResearchLinkCardActions({
             <SelectTrigger
               size="sm"
               aria-label="Reading status"
-              className={cn(
-                "border-border text-foreground h-8 w-auto min-w-44 justify-between rounded-lg bg-white font-normal shadow-none sm:min-w-48",
-                "dark:bg-background"
-              )}
+              className={cn("")}
             >
               <SelectValue />
             </SelectTrigger>
-            <SelectContent
-              align="end"
-              className="z-70 border-border text-foreground dark:bg-background bg-white"
-            >
+            <SelectContent align="end" className="">
               <SelectGroup>
                 {LINK_STATUSES.map((s) => (
-                  <SelectItem
-                    key={s}
-                    value={s}
-                    className="data-highlighted:bg-neutral-100 dark:data-highlighted:bg-muted data-[state=checked]:font-medium"
-                  >
+                  <SelectItem key={s} value={s} className="">
                     {s}
                   </SelectItem>
                 ))}
@@ -299,8 +289,8 @@ export function ResearchLinkCardActions({
               This removes{" "}
               <strong className="text-foreground font-medium">
                 {link.title}
-              </strong>{" "}
-              from the shared vault. This action cannot be undone.
+              </strong>
+              . This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
 

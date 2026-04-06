@@ -1,4 +1,3 @@
-import { ExternalLink, FolderKanban, Tag } from "lucide-react";
 import { ResearchLinkCardActions } from "@/components/research-link-card-actions";
 import {
   DEFAULT_LINK_STATUS,
@@ -6,6 +5,7 @@ import {
   type LinkStatus,
 } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { ExternalLink, FolderKanban, Hash } from "lucide-react";
 
 export type ResearchLinkCardProps = {
   id: string;
@@ -50,8 +50,10 @@ export function ResearchLinkCard({
   return (
     <article
       className={cn(
-        "border-border bg-card hover:bg-primary/2 py-5.5 flex w-full min-w-0 flex-col gap-4 overflow-hidden rounded-2xl border px-5 transition-colors duration-300 ease-in-out",
-        className
+        "border-border bg-card hover:bg-primary/2 hover:border-primary/15 py-5.5 flex w-full min-w-0 cursor-pointer flex-col gap-4 overflow-hidden rounded-2xl border px-5 transition-colors duration-300 ease-in-out",
+        className,
+        isFavorite &&
+          "bg-linear-to-r from-primary/2 to-primary/0 border-primary/20"
       )}
     >
       <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
@@ -101,9 +103,9 @@ export function ResearchLinkCard({
           {tags.map((tag, index) => (
             <span
               key={`${tag}-${index}`}
-              className="border-border bg-muted text-muted-foreground dark:bg-input/40 inline-flex items-center gap-1.5 rounded-md border px-2 py-0.5 text-xs font-medium transition-colors"
+              className="border-border bg-muted text-muted-foreground dark:bg-input/40 inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-xs font-medium transition-colors"
             >
-              <Tag className="size-3.5 shrink-0" aria-hidden />
+              <Hash className="size-3.5 shrink-0" aria-hidden />
 
               {tag}
             </span>
