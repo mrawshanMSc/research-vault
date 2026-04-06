@@ -10,6 +10,14 @@ import {
 } from "@/components/edit-research-link-dialog";
 import { Button } from "@/components/ui/button";
 import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Dialog,
   DialogClose,
   DialogContent,
@@ -18,7 +26,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { DEFAULT_LINK_STATUS } from "@/lib/types";
+import {
+  DEFAULT_LINK_STATUS,
+  LINK_STATUSES,
+  type LinkStatus,
+} from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 export type ResearchLinkCardActionsProps = {
@@ -34,10 +46,38 @@ export function ResearchLinkCardActions({
   const [editOpen, setEditOpen] = useState(false);
   const [isFavorite, setIsFavorite] = useState(Boolean(link.isFavorite));
   const [favoriteLoading, setFavoriteLoading] = useState(false);
+  const [status, setStatus] = useState<LinkStatus>(
+    link.status ?? DEFAULT_LINK_STATUS
+  );
+  const [statusSaving, setStatusSaving] = useState(false);
 
   useEffect(() => {
     setIsFavorite(Boolean(link.isFavorite));
   }, [link.id, link.isFavorite]);
+
+  useEffect(() => {
+    setStatus(link.status ?? DEFAULT_LINK_STATUS);
+  }, [link.id, link.status]);
+
+  const persistLink = async (
+    patch: Partial<{ status: LinkStatus; isFavorite: boolean }>
+  ) => {
+    const res = await fetch(`/api/links/${encodeURIComponent(link.id)}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        url: link.url,
+        title: link.title,
+        notes: link.notes,
+        category: link.category,
+        tags: link.tags ?? [],
+        status: patch.status ?? status,
+        isFavorite:
+          patch.isFavorite !== undefined ? patch.isFavorite : isFavorite,
+      }),
+    });
+    return res;
+  };
 
   // Handle delete confirmation
   const handleConfirmDelete = async () => {
@@ -77,19 +117,7 @@ export function ResearchLinkCardActions({
   const handleToggleFavorite = async () => {
     setFavoriteLoading(true);
     try {
-      const res = await fetch(`/api/links/${encodeURIComponent(link.id)}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          url: link.url,
-          title: link.title,
-          notes: link.notes,
-          category: link.category,
-          tags: link.tags ?? [],
-          status: link.status ?? DEFAULT_LINK_STATUS,
-          isFavorite: !isFavorite,
-        }),
-      });
+      const res = await persistLink({ isFavorite: !isFavorite });
 
       const body = await res.json().catch(() => null);
 
@@ -124,6 +152,41 @@ export function ResearchLinkCardActions({
     }
   };
 
+  // Handle status change
+  const handleStatusChange = async (next: LinkStatus) => {
+    if (next === status) return;
+    const previous = status;
+    setStatus(next);
+    setStatusSaving(true);
+    try {
+      const res = await persistLink({ status: next });
+
+      const body = await res.json().catch(() => null);
+
+      if (!res.ok) {
+        setStatus(previous);
+        const message =
+          body && typeof body === "object" && "message" in body
+            ? String((body as { message: unknown }).message)
+            : "Could not update status.";
+        toast.error("Status failed", { description: message });
+        return;
+      }
+
+      toast.success("Status updated", {
+        description: `Set to “${next}”.`,
+      });
+      router.refresh();
+    } catch {
+      setStatus(previous);
+      toast.error("Something went wrong", {
+        description: "Please try again in a moment.",
+      });
+    } finally {
+      setStatusSaving(false);
+    }
+  };
+
   return (
     <>
       <div className="flex w-full min-w-0 items-center gap-2">
@@ -147,30 +210,65 @@ export function ResearchLinkCardActions({
           Delete
         </Button>
 
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          disabled={favoriteLoading}
-          className="border-border bg-background text-foreground ml-auto shrink-0 rounded-full font-normal shadow-none"
-          onClick={handleToggleFavorite}
-        >
-          {favoriteLoading ? (
-            <Loader2Icon
-              className="size-3.5 shrink-0 animate-spin stroke-[1.5]"
-              aria-hidden
-            />
-          ) : (
-            <StarIcon
+        <div className="ml-auto flex min-w-0 shrink-0 flex-row flex-wrap items-center justify-end gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={favoriteLoading}
+            className="border-border bg-background text-foreground shrink-0 rounded-full font-normal shadow-none"
+            onClick={handleToggleFavorite}
+          >
+            {favoriteLoading ? (
+              <Loader2Icon
+                className="size-3.5 shrink-0 animate-spin stroke-[1.5]"
+                aria-hidden
+              />
+            ) : (
+              <StarIcon
+                className={cn(
+                  "size-3.5 shrink-0 stroke-[1.5]",
+                  isFavorite && "fill-primary text-primary"
+                )}
+                aria-hidden
+              />
+            )}
+            {isFavorite ? "Favorited" : "Mark Favorite"}
+          </Button>
+
+          <Select
+            value={status}
+            onValueChange={(value) => handleStatusChange(value as LinkStatus)}
+            disabled={statusSaving || favoriteLoading}
+          >
+            <SelectTrigger
+              size="sm"
+              aria-label="Reading status"
               className={cn(
-                "size-3.5 shrink-0 stroke-[1.5]",
-                isFavorite && "fill-primary text-primary"
+                "border-border text-foreground h-8 w-auto min-w-44 justify-between rounded-lg bg-white font-normal shadow-none sm:min-w-48",
+                "dark:bg-background"
               )}
-              aria-hidden
-            />
-          )}
-          {isFavorite ? "Favorited" : "Mark Favorite"}
-        </Button>
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent
+              align="end"
+              className="z-70 border-border text-foreground dark:bg-background bg-white"
+            >
+              <SelectGroup>
+                {LINK_STATUSES.map((s) => (
+                  <SelectItem
+                    key={s}
+                    value={s}
+                    className="data-highlighted:bg-neutral-100 dark:data-highlighted:bg-muted data-[state=checked]:font-medium"
+                  >
+                    {s}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {/* Edit dialog */}
