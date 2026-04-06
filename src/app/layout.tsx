@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { siteUrl, authors } from "@/lib/info";
 import { LinkForm } from "@/components/link-form";
 import { Toaster } from "@/components/ui/sonner";
+import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = Geist({
   variable: "--font-sans",
@@ -103,6 +104,7 @@ export default function RootLayout({
                 <div className="lg:col-span-7">{children}</div>
               </div>
             </div>
+            <Analytics />
           </ThemeProvider>
         </main>
         <Toaster />
