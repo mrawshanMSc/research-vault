@@ -55,7 +55,7 @@ export type DuplicateWarning = {
   >;
 };
 
-export const LINK_CATEGORIES: LinkCategory[] = [
+const DEFAULT_CATEGORIES: LinkCategory[] = [
   "Journal Article",
   "Book",
   "Video",
@@ -64,12 +64,43 @@ export const LINK_CATEGORIES: LinkCategory[] = [
   "Other",
 ];
 
-export const LINK_STATUSES: LinkStatus[] = [
+const DEFAULT_STATUSES: LinkStatus[] = [
   "To Read",
   "Reading",
   "Reviewed",
   "Important",
 ];
+
+let runtimeCategories: LinkCategory[] = [...DEFAULT_CATEGORIES];
+let runtimeStatuses: LinkStatus[] = [...DEFAULT_STATUSES];
+
+export function getLinkCategories(): LinkCategory[] {
+  return runtimeCategories;
+}
+
+export function getLinkStatuses(): LinkStatus[] {
+  return runtimeStatuses;
+}
+
+export function setLinkMeta(options: {
+  categories?: string[];
+  statuses?: string[];
+}) {
+  if (options.categories) {
+    runtimeCategories = options.categories.filter((c): c is LinkCategory =>
+      DEFAULT_CATEGORIES.includes(c as LinkCategory)
+    );
+  }
+
+  if (options.statuses) {
+    runtimeStatuses = options.statuses.filter((s): s is LinkStatus =>
+      DEFAULT_STATUSES.includes(s as LinkStatus)
+    );
+  }
+}
+
+export const LINK_CATEGORIES = DEFAULT_CATEGORIES;
+export const LINK_STATUSES = DEFAULT_STATUSES;
 
 export const LINK_SORT_OPTIONS: Array<{
   label: string;
