@@ -63,10 +63,19 @@ export default async function Home(props: HomePageProps) {
     {} as Record<LinkStatus, number>
   );
 
+  const favoritesCount = countSourceLinks.filter(
+    (link) => link.isFavorite
+  ).length;
+
   return (
     <>
       <section className="border-border h-full w-full space-y-4 pb-24 lg:border-l lg:pl-6">
-        <LinksToolbar filters={filters} statusCounts={statusCounts} />
+        <LinksToolbar
+          filters={filters}
+          statusCounts={statusCounts}
+          filteredLinkCount={links.length}
+          favoritesCount={favoritesCount}
+        />
 
         {/* <h2 className="text-2xl font-medium tracking-tight">
           Shared Research Vault
