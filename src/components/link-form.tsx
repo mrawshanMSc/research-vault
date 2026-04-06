@@ -4,6 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckIcon, Loader2Icon, PlusIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
+import { useState } from "react";
+import { AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import * as z from "zod";
 import {
@@ -99,6 +101,10 @@ export function LinkForm() {
       tags: "",
     },
   });
+  const [duplicateWarning, setDuplicateWarning] = useState<{
+    message: string;
+    existingLink: { title: string; status: string };
+  } | null>(null);
 
   const onSubmit = async (data: LinkFormValues) => {
     const formattedData = {
@@ -126,21 +132,34 @@ export function LinkForm() {
         toast.error("Could not create link", {
           description: getCreateLinkErrorMessage(result),
         });
+        setDuplicateWarning(null);
         return;
+      }
+
+      if (result?.duplicateWarning) {
+        setDuplicateWarning(result.duplicateWarning);
+
+        toast.warning("Duplicate link detected", {
+          description: result.duplicateWarning.message,
+        });
       } else {
+        setDuplicateWarning(null);
+
         toast.success("Link created", {
           description: "Your research link has been added to the vault.",
           icon: <CheckIcon className="size-4" />,
         });
 
         form.reset();
-        router.refresh();
       }
+
+      router.refresh();
     } catch (error) {
       console.error("Error:", error);
       toast.error("Something went wrong", {
         description: "Please try again in a moment.",
       });
+      setDuplicateWarning(null);
     }
   };
 
@@ -286,6 +305,21 @@ export function LinkForm() {
             />
           </FieldGroup>
         </FieldSet>
+
+        {duplicateWarning && (
+          <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-500/30 dark:bg-amber-950/30 dark:text-amber-100">
+            <div className="flex items-start gap-2">
+              <AlertTriangle className="mt-0.5 size-4 shrink-0" />
+              <div className="space-y-1">
+                <p className="font-medium">{duplicateWarning.message}</p>
+                <p className="text-xs leading-5 text-amber-800 dark:text-amber-200">
+                  Existing item: {duplicateWarning.existingLink.title} (
+                  {duplicateWarning.existingLink.status})
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         <FieldSeparator />
 
