@@ -30,10 +30,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
-import type { LinkCategory } from "@/lib/types";
-import { LINK_CATEGORIES } from "@/lib/types";
+import type { LinkCategory, LinkStatus } from "@/lib/types";
+import { DEFAULT_LINK_STATUS, LINK_CATEGORIES } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 const modalFieldClass =
@@ -46,6 +45,8 @@ export type EditResearchLinkSnapshot = {
   notes: string;
   category: LinkCategory;
   tags: string[];
+  status?: LinkStatus;
+  isFavorite?: boolean;
 };
 
 type EditResearchLinkDialogProps = {
@@ -135,6 +136,8 @@ export function EditResearchLinkDialog({
           notes,
           category,
           tags: tagsPayload,
+          status: linkRef.current.status ?? DEFAULT_LINK_STATUS,
+          isFavorite: Boolean(linkRef.current.isFavorite),
         }),
       });
 
