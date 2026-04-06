@@ -8,76 +8,26 @@ import {
 } from "@/lib/types";
 import {
   BarChart3,
-  BookmarkCheck,
-  Clock3,
-  Flame,
-  NotebookPen,
+  BookOpen,
+  ShieldAlert,
   SlidersHorizontal,
-  type LucideIcon,
+  Star,
+  Telescope,
 } from "lucide-react";
 
 type LinksToolbarProps = {
   filters: LinkFiltersType;
   statusCounts: Record<LinkStatus, number>;
+  filteredLinkCount: number;
+  favoritesCount: number;
 };
 
-const statusMeta: Record<
-  LinkStatus,
-  {
-    description: string;
-    icon: LucideIcon;
-  }
-> = {
-  "To Read": {
-    description: "Queued up next",
-    icon: Clock3,
-  },
-  Reading: {
-    description: "Currently in progress",
-    icon: NotebookPen,
-  },
-  Reviewed: {
-    description: "Already covered",
-    icon: BookmarkCheck,
-  },
-  Important: {
-    description: "Worth revisiting",
-    icon: Flame,
-  },
-};
-
-function buildStatusHref(filters: LinkFiltersType, status: LinkStatus) {
-  const params = new URLSearchParams();
-
-  if (filters.search.trim()) {
-    params.set("search", filters.search.trim());
-  }
-
-  if (filters.category.trim()) {
-    params.set("category", filters.category.trim());
-  }
-
-  if (filters.tag.trim()) {
-    params.set("tag", filters.tag.trim());
-  }
-
-  if (filters.favorite.trim()) {
-    params.set("favorite", filters.favorite.trim());
-  }
-
-  if (filters.sort.trim()) {
-    params.set("sort", filters.sort.trim());
-  }
-
-  if (filters.status !== status) {
-    params.set("status", status);
-  }
-
-  const query = params.toString();
-  return query ? `/?${query}` : "/";
-}
-
-export function LinksToolbar({ filters, statusCounts }: LinksToolbarProps) {
+export function LinksToolbar({
+  filters,
+  statusCounts,
+  filteredLinkCount,
+  favoritesCount,
+}: LinksToolbarProps) {
   const defaultTab =
     filters.search || filters.category || filters.tag ? "filters" : "dashboard";
 
@@ -113,9 +63,67 @@ export function LinksToolbar({ filters, statusCounts }: LinksToolbarProps) {
               </div>
             </div>
 
-            {/* <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-              TODO: Dashboard cards
-            </div> */}
+            <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              <div className="border-border dark:bg-card rounded-xl border bg-white p-4 shadow-sm">
+                <div className="text-primary flex items-center gap-2">
+                  <Telescope className="size-5 shrink-0" aria-hidden />
+                  <span className="text-xl font-semibold tabular-nums tracking-tight">
+                    {filteredLinkCount}
+                  </span>
+                </div>
+                <h4 className="text-foreground mt-2.5 text-base font-semibold leading-snug">
+                  Filtered Links
+                </h4>
+                <p className="text-muted-foreground mt-1 text-sm leading-relaxed">
+                  Matches the current filter and sort state.
+                </p>
+              </div>
+
+              <div className="border-border dark:bg-card rounded-xl border bg-white p-4 shadow-sm">
+                <div className="text-primary flex items-center gap-2">
+                  <Star className="size-5 shrink-0 stroke-[1.75]" aria-hidden />
+                  <span className="text-xl font-semibold tabular-nums tracking-tight">
+                    {favoritesCount}
+                  </span>
+                </div>
+                <h4 className="text-foreground mt-2.5 text-base font-semibold leading-snug">
+                  Favorites
+                </h4>
+                <p className="text-muted-foreground mt-1 text-sm leading-relaxed">
+                  Priority sources for quick revisit.
+                </p>
+              </div>
+
+              <div className="border-border dark:bg-card rounded-xl border bg-white p-4 shadow-sm">
+                <div className="text-primary flex items-center gap-2">
+                  <BookOpen className="size-5 shrink-0" aria-hidden />
+                  <span className="text-xl font-semibold tabular-nums tracking-tight">
+                    {statusCounts.Reading}
+                  </span>
+                </div>
+                <h4 className="text-foreground mt-2.5 text-base font-semibold leading-snug">
+                  Reading Now
+                </h4>
+                <p className="text-muted-foreground mt-1 text-sm leading-relaxed">
+                  Items currently in active review.
+                </p>
+              </div>
+
+              <div className="border-border dark:bg-card rounded-xl border bg-white p-4 shadow-sm">
+                <div className="text-primary flex items-center gap-2">
+                  <ShieldAlert className="size-5 shrink-0" aria-hidden />
+                  <span className="text-xl font-semibold tabular-nums tracking-tight">
+                    {statusCounts.Important}
+                  </span>
+                </div>
+                <h4 className="text-foreground mt-2.5 text-base font-semibold leading-snug">
+                  Important
+                </h4>
+                <p className="text-muted-foreground mt-1 text-sm leading-relaxed">
+                  High-signal references worth surfacing first.
+                </p>
+              </div>
+            </div>
           </section>
         </TabsContent>
       </Tabs>
