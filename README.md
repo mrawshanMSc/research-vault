@@ -1,18 +1,31 @@
-# research-vault
+# ResearchVault
 
-A reusable Next.js application created with **Template Next**.
+ResearchVault is a research link management app for saving, organizing, and revisiting high-value sources in one place. It helps teams and individual researchers capture references quickly, enrich them with notes and tags, and sort through growing collections with filters, favorites, and reading-status workflows.
+
+## Overview
+
+ResearchVault is built to make research collections easier to maintain and easier to act on. Instead of storing links in scattered docs, chats, or browser bookmarks, the app gives you a focused workspace for tracking what matters and surfacing the right source at the right time.
+
+## Core Features
+
+- Save research links with titles, notes, categories, and tags
+- Organize sources by reading status and favorites
+- Filter and sort the collection by search, category, tag, status, and priority
+- Review and update saved links through an editable research library interface
+- Persist research data with MongoDB for a durable, production-ready backend
 
 ## Tech Stack
 
-- **Next.js 16** - React framework with App Router
-- **TypeScript** - Type-safe JavaScript
-- **React Compiler** - Enabled in the scaffold
-- **Tailwind CSS** - Utility-first CSS framework
-- **Turbopack** - Fast local development bundler
-- **Shadcn/ui preset `b1YmqvjRA`** - Pre-configured component baseline
-- **AGENTS.md** - Default guidance for coding agents working in the app
-- **next-themes** - Theme switching support
-- **Prettier** - Code formatting with Tailwind plugin
+- **Next.js 16** with the App Router
+- **React 19**
+- **TypeScript**
+- **Tailwind CSS 4**
+- **MongoDB**
+- **React Hook Form** with **Zod** validation
+- **shadcn/ui** with Radix-based primitives
+- **Vitest** for testing
+- **ESLint** for code quality
+- **Prettier** for formatting
 
 ## Getting Started
 
@@ -20,72 +33,81 @@ A reusable Next.js application created with **Template Next**.
 
 - Node.js 20.9 or later
 - npm
+- A MongoDB database
+
+### Environment Variables
+
+Create the environment variables required by the app before running it locally:
+
+```bash
+MONGODB_URI=your-mongodb-connection-string
+MONGODB_DB_NAME=your-database-name
+```
 
 ### Installation
 
-1. Install dependencies:
+Install dependencies:
 
 ```bash
 npm install
 ```
 
-2. Run the development server:
+### Run Locally
+
+Start the development server:
 
 ```bash
 npm run dev
 ```
 
-3. Open [http://localhost:3000](http://localhost:3000) in your browser.
+Then open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### Production Build
+
+Build the application:
+
+```bash
+npm run build
+```
+
+Start the production server:
+
+```bash
+npm run start
+```
+
+## Available Scripts
+
+- `npm run dev` - Start the local development server
+- `npm run build` - Build the app for production
+- `npm run start` - Run the production build
+- `npm run lint` - Run ESLint
+- `npm run typecheck` - Run the TypeScript type checker
+- `npm run test` - Run the test suite with Vitest
+- `npm run format` - Format the codebase with Prettier
+- `npm run format:check` - Check formatting without writing changes
 
 ## Project Structure
 
-```
+```text
 research-vault/
 ├── src/
-│   ├── app/
-│   │   ├── globals.css
-│   │   ├── layout.tsx
-│   │   └── page.tsx
-│   ├── components/
-│   │   ├── theme-provider.tsx
-│   │   └── ui/
-│   └── lib/
-├── public/
-├── AGENTS.md
-├── .prettierrc
-├── .vscode/
-│   └── settings.json
-├── components.json
-├── next.config.ts
+│   ├── app/          # App Router routes, layouts, and API handlers
+│   ├── components/   # Product UI and reusable interface primitives
+│   └── lib/          # Validation, data access, config, and shared utilities
+├── public/           # Static assets
+├── components.json   # shadcn/ui configuration
+├── next.config.ts    # Next.js configuration
 ├── postcss.config.mjs
 ├── eslint.config.mjs
 ├── tsconfig.json
 └── package.json
 ```
 
-## Adding Components
+## Authors
 
-This project uses Shadcn/ui. Add new components:
-
-```bash
-npx shadcn@latest add button
-npx shadcn@latest add card
-npx shadcn@latest add input
-```
-
-## Available Scripts
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run lint` - Lint code with ESLint
-- `npm run format` - Format code with Prettier
-- `npm run format:check` - Check formatting without writing changes
-
-## Contributing
-
-Created with [Template Next](https://www.npmjs.com/package/@edward-hyde/template-next)
-
-## License
-
-MIT License
+- [Thilina Rathnayaka](https://thilina.dev) - Product Lead / Front-end Lead
+- [Ammaar Ilham](https://www.ammaarilham.dev/) - Full-stack Developer / Integration Support
+- [Muhammadu Rawshan](https://www.linkedin.com/in/muhammadu-rawshan/) - Scrum Master / Front-end Developer
+- [Peshala Perera](https://www.linkedin.com/in/peshala-perera-994b411b9/) - Back-end Lead
+- [Pasan Heiyantuduwa](https://www.linkedin.com/in/pasanheiyantuduwa/) - QA / Testing Developer

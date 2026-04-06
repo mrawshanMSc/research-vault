@@ -35,8 +35,7 @@ import type { LinkCategory, LinkStatus } from "@/lib/types";
 import { DEFAULT_LINK_STATUS, LINK_CATEGORIES } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-const modalFieldClass =
-  "border-primary/10 bg-primary/3 text-foreground placeholder:text-muted-foreground";
+const modalFieldClass = "";
 
 export type EditResearchLinkSnapshot = {
   id: string;
@@ -167,7 +166,7 @@ export function EditResearchLinkDialog({
       setTagInput("");
 
       toast.success("Link updated", {
-        description: "Your changes were saved to the shared vault.",
+        description: "Your changes have been saved.",
         icon: <CheckIcon className="size-4" aria-hidden />,
       });
       onOpenChange(false);
@@ -200,8 +199,8 @@ export function EditResearchLinkDialog({
             Edit research link
           </DialogTitle>
           <DialogDescription className="text-muted-foreground -mt-1 text-sm leading-relaxed">
-            Update the source details, notes, category, or tags without losing
-            the original capture date.
+            Update the source details, notes, category, or tags whenever
+            something changes.
           </DialogDescription>
         </DialogHeader>
 
@@ -346,7 +345,7 @@ export function EditResearchLinkDialog({
           </form>
         </div>
 
-        <DialogFooter className="-mx-6 -mb-6 rounded-b-3xl border-neutral-200 sm:flex-row sm:justify-end">
+        <DialogFooter className="sm:justify-end">
           <DialogClose asChild>
             <Button type="button" variant="outline" size="sm" disabled={saving}>
               Cancel

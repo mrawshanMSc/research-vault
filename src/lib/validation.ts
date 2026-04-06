@@ -45,6 +45,9 @@ export type NormalizedLinkInput = {
   normalizedUrl: string;
 };
 
+export const MAX_NOTES_LENGTH = 160;
+export const MAX_TAG_LENGTH = 40;
+
 function uniqueTags(tags: string[]) {
   const seen = new Set<string>();
 
@@ -127,8 +130,12 @@ export function validateLinkInput(input: LinkInput): {
     errors.status = "Choose one of the supported reading statuses.";
   }
 
-  if (data.tags.some((tag) => tag.length > 40)) {
-    errors.tags = "Keep each tag under 40 characters.";
+  if (data.notes.length > MAX_NOTES_LENGTH) {
+    errors.notes = `Keep notes under ${MAX_NOTES_LENGTH} characters.`;
+  }
+
+  if (data.tags.some((tag) => tag.length > MAX_TAG_LENGTH)) {
+    errors.tags = `Keep each tag under ${MAX_TAG_LENGTH} characters.`;
   }
 
   return {
