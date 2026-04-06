@@ -1,8 +1,8 @@
 "use client";
 
-import { FilePen, Trash2 } from "lucide-react";
+import { FilePen, Loader2Icon, StarIcon, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
   EditResearchLinkDialog,
@@ -18,6 +18,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { DEFAULT_LINK_STATUS } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 export type ResearchLinkCardActionsProps = {
   link: EditResearchLinkSnapshot;
@@ -30,6 +32,12 @@ export function ResearchLinkCardActions({
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(Boolean(link.isFavorite));
+  const [favoriteLoading, setFavoriteLoading] = useState(false);
+
+  useEffect(() => {
+    setIsFavorite(Boolean(link.isFavorite));
+  }, [link.id, link.isFavorite]);
 
   // Handle delete confirmation
   const handleConfirmDelete = async () => {
@@ -42,9 +50,11 @@ export function ResearchLinkCardActions({
       if (!res.ok) {
         const body = await res.json().catch(() => null);
         const message =
-          body && typeof body === "object" && "error" in body
-            ? String((body as { error: unknown }).error)
-            : "Could not remove this link.";
+          body && typeof body === "object" && "message" in body
+            ? String((body as { message: unknown }).message)
+            : body && typeof body === "object" && "error" in body
+              ? String((body as { error: unknown }).error)
+              : "Could not remove this link.";
         toast.error("Delete failed", { description: message });
         return;
       }
@@ -63,9 +73,60 @@ export function ResearchLinkCardActions({
     }
   };
 
+  // Handle toggle favorite (full PATCH so updateLink validates & persists)
+  const handleToggleFavorite = async () => {
+    setFavoriteLoading(true);
+    try {
+      const res = await fetch(`/api/links/${encodeURIComponent(link.id)}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          url: link.url,
+          title: link.title,
+          notes: link.notes,
+          category: link.category,
+          tags: link.tags ?? [],
+          status: link.status ?? DEFAULT_LINK_STATUS,
+          isFavorite: !isFavorite,
+        }),
+      });
+
+      const body = await res.json().catch(() => null);
+
+      if (!res.ok) {
+        const message =
+          body && typeof body === "object" && "message" in body
+            ? String((body as { message: unknown }).message)
+            : "Could not update favorite.";
+        toast.error("Favorite failed", { description: message });
+        return;
+      }
+
+      const next =
+        body &&
+        typeof body === "object" &&
+        "link" in body &&
+        body.link &&
+        typeof body.link === "object" &&
+        "isFavorite" in body.link
+          ? Boolean((body.link as { isFavorite: unknown }).isFavorite)
+          : !isFavorite;
+
+      setIsFavorite(next);
+      toast.success(next ? "Added to favorites" : "Removed from favorites");
+      router.refresh();
+    } catch {
+      toast.error("Something went wrong", {
+        description: "Please try again in a moment.",
+      });
+    } finally {
+      setFavoriteLoading(false);
+    }
+  };
+
   return (
     <>
-      <div className="flex shrink-0 items-center gap-2">
+      <div className="flex w-full min-w-0 items-center gap-2">
         <Button
           type="button"
           variant="outline"
@@ -84,6 +145,31 @@ export function ResearchLinkCardActions({
         >
           <Trash2 className="size-3.5 stroke-[1.5]" aria-hidden />
           Delete
+        </Button>
+
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          disabled={favoriteLoading}
+          className="border-border bg-background text-foreground ml-auto shrink-0 rounded-full font-normal shadow-none"
+          onClick={handleToggleFavorite}
+        >
+          {favoriteLoading ? (
+            <Loader2Icon
+              className="size-3.5 shrink-0 animate-spin stroke-[1.5]"
+              aria-hidden
+            />
+          ) : (
+            <StarIcon
+              className={cn(
+                "size-3.5 shrink-0 stroke-[1.5]",
+                isFavorite && "fill-primary text-primary"
+              )}
+              aria-hidden
+            />
+          )}
+          {isFavorite ? "Favorited" : "Mark Favorite"}
         </Button>
       </div>
 

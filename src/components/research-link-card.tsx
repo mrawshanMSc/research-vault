@@ -1,6 +1,10 @@
 import { ExternalLink, FolderKanban, Tag } from "lucide-react";
 import { ResearchLinkCardActions } from "@/components/research-link-card-actions";
-import type { LinkCategory } from "@/lib/types";
+import {
+  DEFAULT_LINK_STATUS,
+  type LinkCategory,
+  type LinkStatus,
+} from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 export type ResearchLinkCardProps = {
@@ -10,6 +14,8 @@ export type ResearchLinkCardProps = {
   notes: string;
   category: LinkCategory;
   tags?: string[];
+  status?: LinkStatus;
+  isFavorite?: boolean;
   createdAt: Date | string;
   className?: string;
 };
@@ -34,6 +40,8 @@ export function ResearchLinkCard({
   notes,
   category,
   tags = [],
+  status = DEFAULT_LINK_STATUS,
+  isFavorite = false,
   createdAt,
   className,
 }: ResearchLinkCardProps) {
@@ -105,7 +113,16 @@ export function ResearchLinkCard({
 
       <div className="border-border pt-4.5 flex items-center gap-3 border-t">
         <ResearchLinkCardActions
-          link={{ id, title, url, notes, category, tags }}
+          link={{
+            id,
+            title,
+            url,
+            notes,
+            category,
+            tags,
+            status,
+            isFavorite,
+          }}
         />
       </div>
     </article>
