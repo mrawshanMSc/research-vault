@@ -55,6 +55,35 @@ describe("GET /api/links", () => {
     });
   });
 
+  it("should forward status, favorite, and sort query params", async () => {
+    vi.spyOn(linksModule, "listLinks").mockResolvedValue([]);
+
+    const request = new Request(
+      "http://localhost/api/links?status=Reading&favorite=true&sort=title-desc"
+    );
+
+    const response = await GET(request);
+    const data = await response.json();
+
+    expect(linksModule.listLinks).toHaveBeenCalledWith({
+      search: "",
+      category: "",
+      tag: "",
+      status: "Reading",
+      favorite: "true",
+      sort: "title-desc",
+    });
+    expect(response.status).toBe(200);
+    expect(data.filters).toEqual({
+      search: "",
+      category: "",
+      tag: "",
+      status: "Reading",
+      favorite: "true",
+      sort: "title-desc",
+    });
+  });
+
   it("should return 500 if fetching links fails", async () => {
     vi.spyOn(linksModule, "listLinks").mockRejectedValue(() => {});
 

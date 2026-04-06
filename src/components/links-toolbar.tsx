@@ -6,78 +6,14 @@ import {
   type LinkFilters as LinkFiltersType,
   type LinkStatus,
 } from "@/lib/types";
-import {
-  BarChart3,
-  BookmarkCheck,
-  Clock3,
-  Flame,
-  NotebookPen,
-  SlidersHorizontal,
-  type LucideIcon,
-} from "lucide-react";
+import { BarChart3, SlidersHorizontal } from "lucide-react";
 
 type LinksToolbarProps = {
   filters: LinkFiltersType;
   statusCounts: Record<LinkStatus, number>;
 };
 
-const statusMeta: Record<
-  LinkStatus,
-  {
-    description: string;
-    icon: LucideIcon;
-  }
-> = {
-  "To Read": {
-    description: "Queued up next",
-    icon: Clock3,
-  },
-  Reading: {
-    description: "Currently in progress",
-    icon: NotebookPen,
-  },
-  Reviewed: {
-    description: "Already covered",
-    icon: BookmarkCheck,
-  },
-  Important: {
-    description: "Worth revisiting",
-    icon: Flame,
-  },
-};
-
-function buildStatusHref(filters: LinkFiltersType, status: LinkStatus) {
-  const params = new URLSearchParams();
-
-  if (filters.search.trim()) {
-    params.set("search", filters.search.trim());
-  }
-
-  if (filters.category.trim()) {
-    params.set("category", filters.category.trim());
-  }
-
-  if (filters.tag.trim()) {
-    params.set("tag", filters.tag.trim());
-  }
-
-  if (filters.favorite.trim()) {
-    params.set("favorite", filters.favorite.trim());
-  }
-
-  if (filters.sort.trim()) {
-    params.set("sort", filters.sort.trim());
-  }
-
-  if (filters.status !== status) {
-    params.set("status", status);
-  }
-
-  const query = params.toString();
-  return query ? `/?${query}` : "/";
-}
-
-export function LinksToolbar({ filters, statusCounts }: LinksToolbarProps) {
+export function LinksToolbar({ filters }: LinksToolbarProps) {
   const defaultTab =
     filters.search || filters.category || filters.tag ? "filters" : "dashboard";
 
