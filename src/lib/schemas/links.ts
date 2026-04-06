@@ -1,4 +1,4 @@
-import { ObjectId, type Sort } from "mongodb";
+import { Filter, ObjectId, type Sort } from "mongodb";
 import { getDb } from "@/lib/mongodb";
 
 const COLLECTION_NAME = "links";
@@ -22,7 +22,10 @@ async function getCollection() {
   return db.collection<LinkDocument>(COLLECTION_NAME);
 }
 
-export async function findLinks(query: any, sort: Sort) {
+export async function findLinks(
+  query: Filter<LinkDocument>,
+  sort: Sort
+) {
   const collection = await getCollection();
   return collection.find(query, { sort }).toArray();
 }

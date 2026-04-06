@@ -116,7 +116,9 @@ async function findDuplicateWarning(normalizedUrl: string) {
 
   if (!duplicate?._id) return null;
 
-  const existing = toLinkItem(duplicate as any);
+  const existing = toLinkItem(
+    duplicate as LinkDocument & { _id: ObjectId }
+  );
 
   const warning: DuplicateWarning = {
     message: `Saved successfully, but a similar research URL already exists: ${existing.title}.`,
